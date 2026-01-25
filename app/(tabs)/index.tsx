@@ -1,5 +1,6 @@
 import api from '@/api/api';
 import Menu from '@/components/menu';
+import IMenu from '@/models/IMenu';
 import { Image } from 'expo-image';
 import { StyleSheet, Text, View } from 'react-native';
 
@@ -8,7 +9,7 @@ import { useEffect, useState } from 'react';
 
 export default function HomeScreen() {
   
-  const [menus, setMenus] = useState([]);
+  const [menus, setMenus] = useState<IMenu[]>([]);
 
   useEffect(()=>{
     api.getMenus().then(x => x.json()).then(data => setMenus(data));

@@ -1,6 +1,12 @@
 import { PropsWithChildren } from "react";
-import { StyleSheet, Text, TouchableOpacity, useWindowDimensions } from "react-native";
+import { StyleProp, StyleSheet, Text, TouchableOpacity, useWindowDimensions, ViewStyle } from "react-native";
 import RenderHtml from 'react-native-render-html';
+
+type style = {
+    body: ViewStyle,
+    parrafo: ViewStyle,
+    item: ViewStyle
+}
 
 type Props = PropsWithChildren<{
   id: number,
@@ -8,24 +14,24 @@ type Props = PropsWithChildren<{
   precio: number,
   foto: string,
   descripcion: string,
-  css: StyleSheet
+  itemCss: StyleProp<ViewStyle>
 }>;
 
 export default function ItemMenu({
-    id,
-    titulo,
-    precio,
-    foto,
-    descripcion,
-    css
-}:Props){
+        id,
+        titulo,
+        precio,
+        foto,
+        descripcion,
+        itemCss
+    }:Props){
     const { width } = useWindowDimensions();
     const source = {
         html: descripcion
     };
     
     return (
-        <TouchableOpacity style={css.item}>
+        <TouchableOpacity style={itemCss}>
             <Text style={styles.titulo}>{titulo} - $ {precio} </Text>
             <RenderHtml contentWidth={width} source={source}></RenderHtml>
         </TouchableOpacity>

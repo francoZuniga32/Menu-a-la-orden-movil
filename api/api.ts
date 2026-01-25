@@ -1,4 +1,8 @@
-const baseUrl : string = "http://192.168.100.9:3001";
+import IItem from "@/models/IItem";
+import IMenu from "@/models/IMenu";
+import axios from "axios";
+
+const baseUrl : string = "http://192.168.0.63:3001";
 
 export default {
     login(usuario:string, contrasenia:string){
@@ -28,7 +32,7 @@ export default {
         return fetch(baseUrl + "/menus", requestOptions);
     },
 
-    getMenu(id:string){
+    getMenu(id:number|null){
         var myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/json");
 
@@ -52,5 +56,67 @@ export default {
             })
         };
         return fetch(baseUrl + "/usuario/login", requestOptions);
-    }
+    },
+
+    menusUsuario(idUsuario:number){
+        let headers = {"Content-Type": "application/json"};
+
+        return axios({
+            method: 'get',
+            url: baseUrl + "/menus/usuario/"+idUsuario,
+            headers: headers
+        });
+    },
+
+    crearMenu(menu: IMenu){
+        var myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+        
+        var requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: JSON.stringify(menu)
+        };
+
+        return fetch(baseUrl + "/menus/", requestOptions);
+
+    },
+    crearItem(item: IItem[]){
+        var myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+
+        var requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: JSON.stringify({items: item})
+        };
+
+        return fetch(baseUrl + "/menus/items/", requestOptions);
+    },
+    eliminarMenu(id: number){
+        var myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+
+        var requestOptions = {
+            method: 'DELETE',
+            headers: myHeaders
+        };
+
+        return fetch(baseUrl + "/menus/"+id, requestOptions);
+    },
+    eliminarItem( items:IItem[] ){
+        var myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+
+        var requestOptions = { 
+            method: 'DELATE',
+            headers: myHeaders,
+            body: JSON.stringify({
+                items: items
+            })
+        };
+
+        return fetch(baseUrl + "/menus/items", requestOptions);
+    },
+
 };

@@ -3,7 +3,7 @@ import { PropsWithChildren } from "react";
 import { StyleSheet, Text, TouchableOpacity } from "react-native";
 
 type Props = PropsWithChildren<{
-  id: number,
+  id: number | null,
   titulo: string,
   descripcion: string
 }>;

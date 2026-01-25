@@ -1,26 +1,27 @@
 import api from '@/api/api';
 import ItemMenu from '@/components/item_menu';
+import IMenu from '@/models/IMenu';
 import { useLocalSearchParams } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
-
 export default function vermenu() {
   let { id } = useLocalSearchParams<{ id: string }>()
 
-  const [menu, setMenu] = useState({});
+  const [menu, setMenu] = useState<IMenu>({
+    id: 0,
+    nombre: "",
+    template: "",
+    idUsuario: 0
+  });
+
   const [items, setItems] = useState([]);
-  const [css, setCss] = useState<StyleSheet | null>();
 
   useEffect(()=>{
-    api.getMenu(id).then( x => x.json()).then(data => {
+    api.getMenu(parseInt(id)).then( x => x.json()).then(data => {
       setMenu(data)
       setItems(data.items);
-      switch(data.template){
-        case 'template_1.css':
-          setCss(template1);
-        break;
-      }
+      
     });  
   });
 
@@ -30,7 +31,7 @@ export default function vermenu() {
       {
         items.map((m:any, i:number)=>(
           
-          <ItemMenu key={i} css={css} titulo={m.titulo} precio={m.precio} foto={m.foto} descripcion={m.descripcion} ></ItemMenu>
+          <ItemMenu key={i} id={m.id} itemCss={css.item} titulo={m.titulo} precio={m.precio} foto={m.foto} descripcion={m.descripcion} ></ItemMenu>
         ))
       }
       
@@ -38,7 +39,7 @@ export default function vermenu() {
   )
 }
 
-const template1 = StyleSheet.create({
+const css = StyleSheet.create({
   body:{
     margin: 20
   },

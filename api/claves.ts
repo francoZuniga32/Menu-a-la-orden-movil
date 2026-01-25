@@ -13,5 +13,21 @@ export default {
         } catch (error) {
             console.error("Failed to access Keychain", error);
         }
+    },
+
+    async addUser(usaurio:string){
+        try{
+            await AsyncStorage.setItem('user', usaurio);
+        }catch(err){
+            console.error("Fallo");
+        }
+    },
+    async getUser(){
+        try{
+            const token = await AsyncStorage.getItem('user');
+            return token;
+        }catch(err){
+            console.error("Fallo");
+        }
     }
 };

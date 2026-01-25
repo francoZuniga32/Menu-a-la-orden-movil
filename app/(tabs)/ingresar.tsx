@@ -26,7 +26,10 @@ export default function ingresar() {
         return response.json();
       })
       .then(async data => { 
+        console.log(data);
         await keys.addToken(data.token);
+        await keys.addUser(JSON.stringify(data.user));
+
         setUser(data.user);
         router.push('/dashboard');
       })
