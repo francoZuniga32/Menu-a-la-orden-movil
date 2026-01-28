@@ -24,10 +24,12 @@ export default function Dashboard() {
         setToken(token);
     }
 
-
     useEffect(() => {
-        (async()=>{
-            let user: any = await keys.getUser();
+        listarMenus();
+    },[]);
+
+    const listarMenus = async()=>{
+        let user: any = await keys.getUser();
             user = JSON.parse(user);
             setUser(user);
             console.log(user);
@@ -41,8 +43,7 @@ export default function Dashboard() {
                     console.log(data);
                 })
                 .catch(err => console.error(err));
-        })();
-    },[]);
+    }
 
     const CrearMenu = ()=>{
         router.push("/crear");
@@ -52,11 +53,10 @@ export default function Dashboard() {
         if(id){
             api.getMenu(id)
             .then(result => result.json())
-            .then(data => {
-                api.eliminarMenu(data.id);
-                api.eliminarItem(data.items);
-                console.log(data);
-                if(user) api.getMenu(user.id) ;
+            .then(async data => {
+                await api.eliminarMenu(data.id);
+                await api.eliminarItem(data.items);
+                await listarMenus();
             })
         }
     }

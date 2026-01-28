@@ -1,6 +1,6 @@
 import { router } from "expo-router";
 import { PropsWithChildren } from "react";
-import { Button, StyleSheet, Text, View } from "react-native";
+import { Button, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 type Props = PropsWithChildren<{
   id: number | null,
@@ -17,16 +17,18 @@ export default function MenuEdit({
 }:Props){
 
     
-    function verMenu(){
-        router.push(`/vermenu/${id}`);
+    function editMenu(){
+        router.push(`/edit/${id}`);
     };
 
     return (
         <View style={styles.menu}>
-            <View style={styles.menuBody}>
-                <Text style={styles.titulo}>{titulo}</Text>
-                <Text style={styles.descripcion}>{descripcion}</Text>
-            </View>
+            <TouchableOpacity onPress={editMenu}>
+                <View style={styles.menuBody}>
+                    <Text style={styles.titulo}>{titulo}</Text>
+                    <Text style={styles.descripcion}>{descripcion}</Text>
+                </View>
+            </TouchableOpacity>
             <View>
                 <Button title="x" color="red" onPress={() => eliminarMenu(id)}></Button>
             </View>

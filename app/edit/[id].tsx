@@ -4,14 +4,12 @@ import IItem from "@/models/IItem";
 import IMenu from "@/models/IMenu";
 import IUsuario from "@/models/IUsuario";
 import { Picker } from '@react-native-picker/picker';
-import { router } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
-import { Alert, Button, Image, StyleSheet, Text, TextInput, View } from "react-native";
-
-import media from '@/api/media';
+import { Alert, Button, StyleSheet, Text, TextInput, View } from "react-native";
 
 export default function CrearMenu() {
-
+    let { id } = useLocalSearchParams<{ id: string }>();
 
     const [valor, setValor] = useState("java");
     const [nombre, setNombre] = useState("");
@@ -21,17 +19,30 @@ export default function CrearMenu() {
     const [precioItem, setPrecioItem] = useState("");
     const [descripcion, setDescripcionItem] = useState("");
 
-    const [user, setUser] = useState<IUsuario>();
+    const [itemsNuevos, setItemsNuevos] = useState<IItem[]>([]);
+    const [itemsEliminar, setItemsEliminar] = useState<IItem[]>([]);
 
-    const [image, setImage] = useState("");
+    const [user, setUser] = useState<IUsuario>();
 
     useEffect(() => {
         (async () => {
             let user: any = await keys.getUser();
             user = JSON.parse(user);
             setUser(user);
+            inicializarMenu();
         })();
     }, []);
+
+    const inicializarMenu = () => {
+        api.getMenu(parseInt(id))
+            .then(result => result.json())
+            .then(data => {
+                console.log(data);
+                setNombre(data.nombre);
+                setValor(data.template);
+                setItems(data.items);
+            });
+    }
 
     const agregarItem = () => {
         let item: IItem = {
@@ -40,57 +51,70 @@ export default function CrearMenu() {
             precio: parseInt(precioItem),
             descripcion: descripcion,
             foto: null,
-            idMenu: null
+            idMenu: parseInt(id)
         }
 
-        setItems(prev => [...prev, item]);
+        setItemsNuevos(prev => [...prev, item]);
 
     }
 
     const eliminarItem = (i: number) => {
         let itemsEliminado = [...items];
+        //agregamos el nuevo item eliminado a la lista
+        setItemsEliminar(prev => [...prev, items[i]]);
+        //eliminamos el item de la vista
         itemsEliminado.splice(i, 1);
         setItems(itemsEliminado);
+        console.log(itemsEliminado)
     }
 
-    const crearMenu = async () => {
-        let usuario = await keys.getUser();
-            let menuCrear: IMenu = {
-                id: null,
-                nombre: nombre,
-                template: valor,
-                idUsuario: user? user.id : 0
-            };
 
-            api.crearMenu(menuCrear)
-            .then(result => result.json())
-            .then( data => {
-                console.log("menu creado:" +data);
-                //cargamos los items
-                items.forEach( x => {
-                    x.idMenu = data.id
+    const eliminarItemNuevo = (i: number) => {
+        let itemsEliminado = [...itemsNuevos];
+        //eliminamos el item de la vista
+        itemsEliminado.splice(i, 1);
+        setItems(itemsEliminado);
+
+    }
+
+    const editarMenu = async () => {
+        let usuario = await keys.getUser();
+        let menuCrear: IMenu = {
+            id: parseInt(id),
+            nombre: nombre,
+            template: valor,
+            idUsuario: user ? user.id : 0
+        };
+
+        let responseMenuEdit =  await api.editarMenu(menuCrear);
+        if(responseMenuEdit.ok){
+            let control = true;
+            if(itemsNuevos.length > 0){
+                itemsNuevos.forEach(x => {
+                    x.idMenu = parseInt(id)
                 });
 
-                api.crearItem(items)
-                .then(result =>{
-                    return result.json();
-                })
-                .then(data => router.push("/dashboard"))
-                .catch(err => Alert.alert('Error', err, [
-                        {text: 'OK', onPress: () => console.log('OK Pressed')},
-                    ])
-                );
-            }).catch(err => 
-                Alert.alert('Error', err, [
-                    {text: 'OK', onPress: () => console.log('OK Pressed')},
-                ])
-            );
-    }
+                let responseItemsNuevos = await api.crearItem(itemsNuevos);
+                console.log(responseItemsNuevos);
+                control = control && responseItemsNuevos.ok;
+            }
 
-    const loadFile = async ()=>{
-        let foto = await media.pickFile();
-        console.log(foto);
-        if(foto) setImage(foto.uri);
+            if(itemsEliminar.length > 0){
+                
+                let responseItemsEliminar = await api.eliminarItem(itemsEliminar);
+                console.log({items: itemsEliminar, respuesta: responseItemsEliminar});
+                control = control && responseItemsEliminar.ok;
+            }
+
+            if(control) router.push("/dashboard");
+            else Alert.alert('Error', "Error al tratar de eliminar o agregar items al menu", [
+                {text: 'OK', onPress: () => console.log('OK Pressed')},
+            ]);
+        }else{
+            Alert.alert('Error', "Error al tratar de editar el menu", [
+                {text: 'OK', onPress: () => console.log('OK Pressed')},
+            ]);
+        }
     }
 
     let css = StyleSheet.create({
@@ -112,7 +136,7 @@ export default function CrearMenu() {
         <View style={styles.body}>
             <View>
                 <Text style={styles.parrafo}>Nombre</Text>
-                <TextInput style={styles.input} onChangeText={setNombre}></TextInput>
+                <TextInput style={styles.input} value={nombre} onChangeText={setNombre}></TextInput>
             </View>
             <View>
                 <Text style={styles.parrafo}>Template</Text>
@@ -137,11 +161,6 @@ export default function CrearMenu() {
                     <TextInput style={styles.input} onChangeText={setPrecioItem} keyboardType='number-pad'></TextInput>
                     <Text style={styles.parrafo}>Descripcion</Text>
                     <TextInput style={styles.input} onChangeText={setDescripcionItem}></TextInput>
-                    <Button title="Cargar foto" onPress={()=> loadFile()}></Button>
-                    <Image
-                        style={{width: 100, height: 100}}
-                        source={{uri: image}}
-                    />
                     <View style={styles.button}>
                         <Button title='Agregar Item' onPress={agregarItem}></Button>
                     </View>
@@ -164,9 +183,26 @@ export default function CrearMenu() {
                         </View>
                     ))
                 }
+
+                {
+                    itemsNuevos.map((i, k) => (
+                        <View style={css.card} key={k}>
+                            <View style={css.col_10}>
+                                <Text style={styles.parrafo}>{i.titulo}</Text>
+                                <Text style={styles.parrafo}>$. {i.precio}</Text>
+                                <Text style={styles.parrafo}>{i.descripcion}</Text>
+                            </View>
+                            <View>
+                                <Button title='x' color="red" onPress={() => eliminarItemNuevo(k)}>
+
+                                </Button>
+                            </View>
+                        </View>
+                    ))
+                }
             </View>
             <View>
-                <Button title="Crear Menu" onPress={crearMenu}></Button>
+                <Button title="Crear Menu" onPress={editarMenu}></Button>
             </View>
         </View>
     )

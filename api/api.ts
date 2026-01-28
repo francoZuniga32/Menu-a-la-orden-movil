@@ -81,6 +81,18 @@ export default {
         return fetch(baseUrl + "/menus/", requestOptions);
 
     },
+    editarMenu(menu: IMenu){
+        var myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+        
+        var requestOptions = {
+            method: 'PUT',
+            headers: myHeaders,
+            body: JSON.stringify(menu)
+        };
+        console.log(menu);
+        return fetch(baseUrl + "/menus/"+menu.id, requestOptions);
+    },
     crearItem(item: IItem[]){
         var myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/json");
@@ -109,7 +121,7 @@ export default {
         myHeaders.append("Content-Type", "application/json");
 
         var requestOptions = { 
-            method: 'DELATE',
+            method: 'DELETE',
             headers: myHeaders,
             body: JSON.stringify({
                 items: items
