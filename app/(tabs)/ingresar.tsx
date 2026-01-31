@@ -1,4 +1,4 @@
-import { Alert, Button, StyleSheet, Text } from 'react-native';
+import { Alert, Button, Text } from 'react-native';
 
 import api from '@/api/api';
 import ParallaxScrollView from '@/components/parallax-scroll-view';
@@ -8,6 +8,8 @@ import { TextInput } from 'react-native';
 
 import keys from '@/api/claves';
 import { router } from 'expo-router';
+
+import styles from "@/styles/css";
 
 export default function ingresar() {
   const [usuario, setUsuario] = useState('');
@@ -70,24 +72,4 @@ export default function ingresar() {
   );
 }
 
-const styles = StyleSheet.create({
-  parrafo:{
-    color: "white"
-  },
-  input:{
-    borderColor: "white",
-    borderWidth: 1,
-    borderRadius: 2,
-    color: "white"
-  },
-  headerImage: {
-    color: '#808080',
-    bottom: -90,
-    left: -35,
-    position: 'absolute',
-  },
-  titleContainer: {
-    flexDirection: 'row',
-    gap: 8,
-  },
-});
+

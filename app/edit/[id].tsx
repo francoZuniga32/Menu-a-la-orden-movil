@@ -6,7 +6,12 @@ import IUsuario from "@/models/IUsuario";
 import { Picker } from '@react-native-picker/picker';
 import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
-import { Alert, Button, StyleSheet, Text, TextInput, View } from "react-native";
+import { Alert, Button, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+
+import media from "@/api/media";
+import styles from "@/styles/css";
+import { Image } from "expo-image";
+import { ImagePickerAsset } from "expo-image-picker";
 
 export default function CrearMenu() {
     let { id } = useLocalSearchParams<{ id: string }>();
@@ -23,6 +28,9 @@ export default function CrearMenu() {
     const [itemsEliminar, setItemsEliminar] = useState<IItem[]>([]);
 
     const [user, setUser] = useState<IUsuario>();
+
+    const [image, setImage] = useState<ImagePickerAsset>();
+    const [fotos, setFotos] = useState<any[]>([]);
 
     useEffect(() => {
         (async () => {
@@ -55,7 +63,9 @@ export default function CrearMenu() {
         }
 
         setItemsNuevos(prev => [...prev, item]);
-
+        //guardamos la imagen
+        setFotos(prev => [...prev, image]);
+        console.log(image, fotos);
     }
 
     const eliminarItem = (i: number) => {
@@ -75,6 +85,18 @@ export default function CrearMenu() {
         itemsEliminado.splice(i, 1);
         setItems(itemsEliminado);
 
+        let fotosEliminado = [...fotos];
+        fotosEliminado.splice(i, 1);
+        setFotos(fotosEliminado);
+    }
+
+    const loadFile = async () => {
+        let foto = await media.pickFile();
+        console.log(foto);
+        if (foto) {
+            setImage(foto);
+            //await api.uploadFile(foto);
+        }
     }
 
     const editarMenu = async () => {
@@ -86,33 +108,40 @@ export default function CrearMenu() {
             idUsuario: user ? user.id : 0
         };
 
-        let responseMenuEdit =  await api.editarMenu(menuCrear);
-        if(responseMenuEdit.ok){
+        let responseMenuEdit = await api.editarMenu(menuCrear);
+        if (responseMenuEdit.ok) {
             let control = true;
-            if(itemsNuevos.length > 0){
+            if (itemsNuevos.length > 0) {
                 itemsNuevos.forEach(x => {
                     x.idMenu = parseInt(id)
                 });
+
+                for (let i = 0; i < fotos.length; i++) {
+                    let foto = fotos[i];
+                    let responseFoto = await api.uploadFile(foto);
+                    console.log(responseFoto);
+                    itemsNuevos[i].foto = responseFoto.filename;
+                }
 
                 let responseItemsNuevos = await api.crearItem(itemsNuevos);
                 console.log(responseItemsNuevos);
                 control = control && responseItemsNuevos.ok;
             }
 
-            if(itemsEliminar.length > 0){
-                
+            if (itemsEliminar.length > 0) {
+
                 let responseItemsEliminar = await api.eliminarItem(itemsEliminar);
-                console.log({items: itemsEliminar, respuesta: responseItemsEliminar});
+                console.log({ items: itemsEliminar, respuesta: responseItemsEliminar });
                 control = control && responseItemsEliminar.ok;
             }
 
-            if(control) router.push("/dashboard");
+            if (control) router.push("/dashboard");
             else Alert.alert('Error', "Error al tratar de eliminar o agregar items al menu", [
-                {text: 'OK', onPress: () => console.log('OK Pressed')},
+                { text: 'OK', onPress: () => console.log('OK Pressed') },
             ]);
-        }else{
+        } else {
             Alert.alert('Error', "Error al tratar de editar el menu", [
-                {text: 'OK', onPress: () => console.log('OK Pressed')},
+                { text: 'OK', onPress: () => console.log('OK Pressed') },
             ]);
         }
     }
@@ -128,7 +157,9 @@ export default function CrearMenu() {
             flexDirection: "row"
         },
         col_10: {
-            width: "90%"
+            width: "80%",
+            display: "flex",
+            flexDirection: "row"
         }
     })
 
@@ -153,7 +184,7 @@ export default function CrearMenu() {
                 </View>
             </View>
             <View>
-                <Text style={styles.titulo}>Agregar Item</Text>
+                <Text style={styles.title}>Agregar Item</Text>
                 <View>
                     <Text style={styles.parrafo}>Titulo Item</Text>
                     <TextInput style={styles.input} onChangeText={setTituloItem}></TextInput>
@@ -161,6 +192,17 @@ export default function CrearMenu() {
                     <TextInput style={styles.input} onChangeText={setPrecioItem} keyboardType='number-pad'></TextInput>
                     <Text style={styles.parrafo}>Descripcion</Text>
                     <TextInput style={styles.input} onChangeText={setDescripcionItem}></TextInput>
+                    <View style={{ display: "flex", flexDirection: "row", marginTop: 20, height: "auto", minHeight: 100 }}>
+                        <View style={{ width: "90%" }}>
+                            <Image
+                                style={{ width: "auto", height: "auto", minHeight: 100 }}
+                                source={{ uri: image?.uri }}
+                            />
+                        </View>
+                        <TouchableOpacity onPress={loadFile} style={styles.button_image}>
+                            <Image source={require('@/assets/images/add_photo.png')} style={{ width: 30 }} />
+                        </TouchableOpacity>
+                    </View>
                     <View style={styles.button}>
                         <Button title='Agregar Item' onPress={agregarItem}></Button>
                     </View>
@@ -171,9 +213,15 @@ export default function CrearMenu() {
                     items.map((i, k) => (
                         <View style={css.card} key={k}>
                             <View style={css.col_10}>
-                                <Text style={styles.parrafo}>{i.titulo}</Text>
-                                <Text style={styles.parrafo}>$. {i.precio}</Text>
-                                <Text style={styles.parrafo}>{i.descripcion}</Text>
+                                <View>
+                                    <Image source={{ uri: api.baseUrl + '/' + i.foto }} style={{ width: 30, height: 30 }}>
+                                    </Image>
+                                </View>
+                                <View>
+                                    <Text style={styles.parrafo}>{i.titulo}</Text>
+                                    <Text style={styles.parrafo}>$. {i.precio}</Text>
+                                    <Text style={styles.parrafo}>{i.descripcion}</Text>
+                                </View>
                             </View>
                             <View>
                                 <Button title='x' color="red" onPress={() => eliminarItem(k)}>
@@ -188,9 +236,15 @@ export default function CrearMenu() {
                     itemsNuevos.map((i, k) => (
                         <View style={css.card} key={k}>
                             <View style={css.col_10}>
-                                <Text style={styles.parrafo}>{i.titulo}</Text>
-                                <Text style={styles.parrafo}>$. {i.precio}</Text>
-                                <Text style={styles.parrafo}>{i.descripcion}</Text>
+                                <View>
+                                    <Image source={{ uri: fotos[k].uri }} style={{ width: 30, height: 30 }}>
+                                    </Image>
+                                </View>
+                                <View>
+                                    <Text style={styles.parrafo}>{i.titulo}</Text>
+                                    <Text style={styles.parrafo}>$. {i.precio}</Text>
+                                    <Text style={styles.parrafo}>{i.descripcion}</Text>
+                                </View>
                             </View>
                             <View>
                                 <Button title='x' color="red" onPress={() => eliminarItemNuevo(k)}>
@@ -208,25 +262,3 @@ export default function CrearMenu() {
     )
 }
 
-let styles = StyleSheet.create({
-    body: {
-        margin: 2,
-
-    },
-    titulo: {
-        color: "white",
-        fontSize: 25
-    },
-    parrafo: {
-        color: "white"
-    },
-    input: {
-        borderColor: "white",
-        borderWidth: 1,
-        borderRadius: 2,
-        color: "white"
-    },
-    button: {
-        marginTop: 20
-    }
-})

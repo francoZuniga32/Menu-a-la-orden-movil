@@ -5,6 +5,7 @@ import axios from "axios";
 const baseUrl : string = "http://192.168.0.63:3001";
 
 export default {
+    baseUrl: "http://192.168.0.63:3001",
     login(usuario:string, contrasenia:string){
         var myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/json");
@@ -130,5 +131,24 @@ export default {
 
         return fetch(baseUrl + "/menus/items", requestOptions);
     },
+    uploadFile: async (file : any)=>{
+        const formData = new FormData();
+
+        formData.append("miniatura", {
+            uri: file.uri,
+            name: file.fileName ?? "archivo.jpg",
+            type: file.mimeType ?? "image/jpeg",
+        } as any);
+
+        const response = await fetch(baseUrl+"/upload", {
+            method: "POST",
+            headers: {
+                "Content-Type": "multipart/form-data",
+            },
+            body: formData,
+        });
+
+        return await response.json();
+    }
 
 };

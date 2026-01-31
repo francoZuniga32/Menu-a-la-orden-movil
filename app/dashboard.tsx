@@ -4,7 +4,9 @@ import Menu from '@/components/menu_edit';
 import IUsuario from '@/models/IUsuario';
 import { router } from 'expo-router';
 import { useEffect, useState } from "react";
-import { Button, StyleSheet, View } from "react-native";
+import { Button, View } from "react-native";
+
+import styles from "@/styles/css";
 
 export default function Dashboard() {
 
@@ -81,18 +83,3 @@ export default function Dashboard() {
         </View>
     )
 }
-
-const styles = StyleSheet.create({
-    body: {
-        margin: 20
-    },
-    flexRow: {
-        width: "100%",
-        display: "flex",
-        flexDirection: "row"
-    },
-    w100: {
-        width: "50%",
-        padding: 2
-    }
-})

@@ -2,10 +2,12 @@ import api from '@/api/api';
 import Menu from '@/components/menu';
 import IMenu from '@/models/IMenu';
 import { Image } from 'expo-image';
-import { StyleSheet, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
 
 import ParallaxScrollView from '@/components/parallax-scroll-view';
 import { useEffect, useState } from 'react';
+
+import styles from "@/styles/css";
 
 export default function HomeScreen() {
   
@@ -39,17 +41,3 @@ export default function HomeScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  title: {
-    color: "white",
-    textAlign: "center",
-    fontSize: 20
-  },
-  reactLogo: {
-    height: "100%",
-    width: "100%",
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
-  },
-});

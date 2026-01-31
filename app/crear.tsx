@@ -6,14 +6,17 @@ import IUsuario from "@/models/IUsuario";
 import { Picker } from '@react-native-picker/picker';
 import { router } from "expo-router";
 import { useEffect, useState } from "react";
-import { Alert, Button, Image, StyleSheet, Text, TextInput, View } from "react-native";
+import { Alert, Button, Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+
+import styles from "@/styles/css";
 
 import media from '@/api/media';
+import { ImagePickerAsset } from "expo-image-picker";
 
 export default function CrearMenu() {
 
 
-    const [valor, setValor] = useState("java");
+    const [valor, setValor] = useState("template1");
     const [nombre, setNombre] = useState("");
     const [items, setItems] = useState<IItem[]>([]);
 
@@ -23,7 +26,8 @@ export default function CrearMenu() {
 
     const [user, setUser] = useState<IUsuario>();
 
-    const [image, setImage] = useState("");
+    const [image, setImage] = useState<ImagePickerAsset>();
+    const [fotos, setFotos] = useState<any[]>([]);
 
     useEffect(() => {
         (async () => {
@@ -33,7 +37,7 @@ export default function CrearMenu() {
         })();
     }, []);
 
-    const agregarItem = () => {
+    const agregarItem = async () => {
         let item: IItem = {
             id: 0,
             titulo: tituloItem,
@@ -44,53 +48,70 @@ export default function CrearMenu() {
         }
 
         setItems(prev => [...prev, item]);
-
+        //guardamos la imagen
+        setFotos(prev => [...prev, image]);
+        console.log(image, fotos);
     }
 
     const eliminarItem = (i: number) => {
         let itemsEliminado = [...items];
         itemsEliminado.splice(i, 1);
         setItems(itemsEliminado);
+
+        let fotosEliminado = [...fotos];
+        fotosEliminado.splice(i, 1);
+        setFotos(fotosEliminado);
     }
 
     const crearMenu = async () => {
         let usuario = await keys.getUser();
-            let menuCrear: IMenu = {
-                id: null,
-                nombre: nombre,
-                template: valor,
-                idUsuario: user? user.id : 0
-            };
+        let menuCrear: IMenu = {
+            id: null,
+            nombre: nombre,
+            template: valor,
+            idUsuario: user ? user.id : 0
+        };
 
-            api.crearMenu(menuCrear)
-            .then(result => result.json())
-            .then( data => {
-                console.log("menu creado:" +data);
-                //cargamos los items
-                items.forEach( x => {
-                    x.idMenu = data.id
-                });
+        let responseMenu = await api.crearMenu(menuCrear);
+        if(responseMenu.ok){
+            let dataMenu = await responseMenu.json();
+            console.log("menu creado:" + dataMenu);
+            //cargamos los items
+            items.forEach(x => {
+                x.idMenu = dataMenu.id
+            });
+            
+            //cargamos las imagenes
+            console.log(fotos);
+            for (let i = 0; i < fotos.length; i++) {
+                let foto = fotos[i];
+                let responseFoto = await api.uploadFile(foto);
+                console.log(responseFoto);
+                items[i].foto = responseFoto.filename;
+            }
 
-                api.crearItem(items)
-                .then(result =>{
-                    return result.json();
-                })
-                .then(data => router.push("/dashboard"))
-                .catch(err => Alert.alert('Error', err, [
-                        {text: 'OK', onPress: () => console.log('OK Pressed')},
-                    ])
-                );
-            }).catch(err => 
-                Alert.alert('Error', err, [
-                    {text: 'OK', onPress: () => console.log('OK Pressed')},
-                ])
-            );
+            let responseItems = await api.crearItem(items);
+            if(responseItems.ok){
+                router.push("/dashboard");
+            }else{
+                Alert.alert("Error", "No se pudieron cargar los items",[
+                    { text: 'OK', onPress: () => console.log('OK Pressed') },
+                ]);
+            }
+        }else{
+            Alert.alert("Error", "No se pudo cargar el menu",[
+                { text: 'OK', onPress: () => console.log('OK Pressed') },
+            ]);
+        }
     }
 
-    const loadFile = async ()=>{
+    const loadFile = async () => {
         let foto = await media.pickFile();
         console.log(foto);
-        if(foto) setImage(foto.uri);
+        if (foto) {
+            setImage(foto);
+            //await api.uploadFile(foto);
+        }
     }
 
     let css = StyleSheet.create({
@@ -104,7 +125,9 @@ export default function CrearMenu() {
             flexDirection: "row"
         },
         col_10: {
-            width: "90%"
+            width: "80%",
+            display: "flex",
+            flexDirection: "row"
         }
     })
 
@@ -129,7 +152,7 @@ export default function CrearMenu() {
                 </View>
             </View>
             <View>
-                <Text style={styles.titulo}>Agregar Item</Text>
+                <Text style={styles.title}>Agregar Item</Text>
                 <View>
                     <Text style={styles.parrafo}>Titulo Item</Text>
                     <TextInput style={styles.input} onChangeText={setTituloItem}></TextInput>
@@ -137,14 +160,18 @@ export default function CrearMenu() {
                     <TextInput style={styles.input} onChangeText={setPrecioItem} keyboardType='number-pad'></TextInput>
                     <Text style={styles.parrafo}>Descripcion</Text>
                     <TextInput style={styles.input} onChangeText={setDescripcionItem}></TextInput>
-                    <Button title="Cargar foto" onPress={()=> loadFile()}></Button>
-                    <Image
-                        style={{width: 100, height: 100}}
-                        source={{uri: image}}
-                    />
-                    <View style={styles.button}>
-                        <Button title='Agregar Item' onPress={agregarItem}></Button>
+                    <View style={{display: "flex", flexDirection: "row", marginTop: 20, height: "auto", minHeight: 100}}>
+                        <View style={{width: "90%"}}>
+                            <Image
+                                style={{ width: "auto", height: "auto", minHeight: 100}}
+                                source={{ uri: image?.uri }}
+                            />
+                        </View>
+                        <TouchableOpacity onPress={loadFile} style={styles.button_image}>
+                            <Image source={require('@/assets/images/add_photo.png')} style={{width: 30}} />
+                        </TouchableOpacity>
                     </View>
+                    <Button title="Agregar Item" onPress={agregarItem}></Button>
                 </View>
             </View>
             <View>
@@ -152,9 +179,15 @@ export default function CrearMenu() {
                     items.map((i, k) => (
                         <View style={css.card} key={k}>
                             <View style={css.col_10}>
-                                <Text style={styles.parrafo}>{i.titulo}</Text>
-                                <Text style={styles.parrafo}>$. {i.precio}</Text>
-                                <Text style={styles.parrafo}>{i.descripcion}</Text>
+                                <View>
+                                    <Image source={{uri: fotos[k].uri}} style={{width: 30, height: 30}}>
+                                    </Image>
+                                </View>
+                                <View>
+                                    <Text style={styles.parrafo}>{i.titulo}</Text>
+                                    <Text style={styles.parrafo}>$. {i.precio}</Text>
+                                    <Text style={styles.parrafo}>{i.descripcion}</Text>
+                                </View>
                             </View>
                             <View>
                                 <Button title='x' color="red" onPress={() => eliminarItem(k)}>
@@ -165,32 +198,9 @@ export default function CrearMenu() {
                     ))
                 }
             </View>
-            <View>
+            <View style={{marginBottom: 10}}>
                 <Button title="Crear Menu" onPress={crearMenu}></Button>
             </View>
         </View>
     )
 }
-
-let styles = StyleSheet.create({
-    body: {
-        margin: 2,
-
-    },
-    titulo: {
-        color: "white",
-        fontSize: 25
-    },
-    parrafo: {
-        color: "white"
-    },
-    input: {
-        borderColor: "white",
-        borderWidth: 1,
-        borderRadius: 2,
-        color: "white"
-    },
-    button: {
-        marginTop: 20
-    }
-})
