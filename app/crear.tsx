@@ -46,11 +46,18 @@ export default function CrearMenu() {
             foto: null,
             idMenu: null
         }
-
-        setItems(prev => [...prev, item]);
-        //guardamos la imagen
-        setFotos(prev => [...prev, image]);
-        console.log(image, fotos);
+        let mensajeValidacion = validarCargaItem();
+        if (mensajeValidacion == "") {
+            setItems(prev => [...prev, item]);
+            //guardamos la imagen
+            let imagen = image? image : {uri: ""};
+            setFotos(prev => [...prev, imagen]);
+            console.log(imagen, fotos);
+        } else {
+            Alert.alert("Error al cargar el item", mensajeValidacion, [
+                { text: 'OK', onPress: () => console.log('OK Pressed') },
+            ]);
+        }
     }
 
     const eliminarItem = (i: number) => {
@@ -65,41 +72,49 @@ export default function CrearMenu() {
 
     const crearMenu = async () => {
         let usuario = await keys.getUser();
-        let menuCrear: IMenu = {
-            id: null,
-            nombre: nombre,
-            template: valor,
-            idUsuario: user ? user.id : 0
-        };
 
-        let responseMenu = await api.crearMenu(menuCrear);
-        if(responseMenu.ok){
-            let dataMenu = await responseMenu.json();
-            console.log("menu creado:" + dataMenu);
-            //cargamos los items
-            items.forEach(x => {
-                x.idMenu = dataMenu.id
-            });
-            
-            //cargamos las imagenes
-            console.log(fotos);
-            for (let i = 0; i < fotos.length; i++) {
-                let foto = fotos[i];
-                let responseFoto = await api.uploadFile(foto);
-                console.log(responseFoto);
-                items[i].foto = responseFoto.filename;
-            }
+        let mensajeValidacion = validarCargaMenu();
+        if (mensajeValidacion == "") {
+            let menuCrear: IMenu = {
+                id: null,
+                nombre: nombre,
+                template: valor,
+                idUsuario: user ? user.id : 0
+            };
 
-            let responseItems = await api.crearItem(items);
-            if(responseItems.ok){
-                router.push("/dashboard");
-            }else{
-                Alert.alert("Error", "No se pudieron cargar los items",[
+            let responseMenu = await api.crearMenu(menuCrear);
+            if (responseMenu.ok) {
+                let dataMenu = await responseMenu.json();
+                console.log("menu creado:" + dataMenu);
+                //cargamos los items
+                items.forEach(x => {
+                    x.idMenu = dataMenu.id
+                });
+
+                //cargamos las imagenes
+                console.log(fotos);
+                for (let i = 0; i < fotos.length; i++) {
+                    let foto = fotos[i];
+                    let responseFoto = await api.uploadFile(foto);
+                    console.log(responseFoto);
+                    items[i].foto = responseFoto.filename;
+                }
+
+                let responseItems = await api.crearItem(items);
+                if (responseItems.ok) {
+                    router.push("/dashboard");
+                } else {
+                    Alert.alert("Error", "No se pudieron cargar los items", [
+                        { text: 'OK', onPress: () => console.log('OK Pressed') },
+                    ]);
+                }
+            } else {
+                Alert.alert("Error", "No se pudo cargar el menu", [
                     { text: 'OK', onPress: () => console.log('OK Pressed') },
                 ]);
             }
-        }else{
-            Alert.alert("Error", "No se pudo cargar el menu",[
+        } else {
+            Alert.alert("Error al cargar el menu.", mensajeValidacion, [
                 { text: 'OK', onPress: () => console.log('OK Pressed') },
             ]);
         }
@@ -112,6 +127,21 @@ export default function CrearMenu() {
             setImage(foto);
             //await api.uploadFile(foto);
         }
+    }
+
+    const validarCargaItem = () => {
+        var mensaje = "";
+        if (tituloItem == "") mensaje += "tiene que cargar el titulo de un item. \n";
+        if (precioItem == "") mensaje += "tiene que cargar el precio de un item. \n";
+        if (descripcion == "") mensaje += "tiene una descripcion para el item. \n";
+        return mensaje;
+    }
+
+    const validarCargaMenu = () => {
+        var mensaje = "";
+        if (nombre == "") mensaje += "tiene que cargar un nombre al menu.\n";
+        if (items.length == 0) mensaje += "tiene que agregar items al menu.\n";
+        return mensaje;
     }
 
     let css = StyleSheet.create({
@@ -160,15 +190,15 @@ export default function CrearMenu() {
                     <TextInput style={styles.input} onChangeText={setPrecioItem} keyboardType='number-pad'></TextInput>
                     <Text style={styles.parrafo}>Descripcion</Text>
                     <TextInput style={styles.input} onChangeText={setDescripcionItem}></TextInput>
-                    <View style={{display: "flex", flexDirection: "row", marginTop: 20, height: "auto", minHeight: 100}}>
-                        <View style={{width: "90%"}}>
+                    <View style={{ display: "flex", flexDirection: "row", marginTop: 20, height: "auto", minHeight: 100 }}>
+                        <View style={{ width: "90%" }}>
                             <Image
-                                style={{ width: "auto", height: "auto", minHeight: 100}}
+                                style={{ width: "auto", height: "auto", minHeight: 100 }}
                                 source={{ uri: image?.uri }}
                             />
                         </View>
                         <TouchableOpacity onPress={loadFile} style={styles.button_image}>
-                            <Image source={require('@/assets/images/add_photo.png')} style={{width: 30}} />
+                            <Image source={require('@/assets/images/add_photo.png')} style={{ width: 30 }} />
                         </TouchableOpacity>
                     </View>
                     <Button title="Agregar Item" onPress={agregarItem}></Button>
@@ -180,7 +210,7 @@ export default function CrearMenu() {
                         <View style={css.card} key={k}>
                             <View style={css.col_10}>
                                 <View>
-                                    <Image source={{uri: fotos[k].uri}} style={{width: 30, height: 30}}>
+                                    <Image source={{ uri: fotos[k].uri }} style={{ width: 30, height: 30 }}>
                                     </Image>
                                 </View>
                                 <View>
@@ -198,7 +228,7 @@ export default function CrearMenu() {
                     ))
                 }
             </View>
-            <View style={{marginBottom: 10}}>
+            <View style={{ marginBottom: 10 }}>
                 <Button title="Crear Menu" onPress={crearMenu}></Button>
             </View>
         </View>

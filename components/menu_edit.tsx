@@ -23,8 +23,8 @@ export default function MenuEdit({
 
     return (
         <View style={styles.menu}>
-            <TouchableOpacity onPress={editMenu}>
-                <View style={styles.menuBody}>
+            <TouchableOpacity onPress={editMenu} style={styles.menuBody}>
+                <View>
                     <Text style={styles.titulo}>{titulo}</Text>
                     <Text style={styles.descripcion}>{descripcion}</Text>
                 </View>

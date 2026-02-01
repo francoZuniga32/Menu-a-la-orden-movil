@@ -1,8 +1,24 @@
-# Welcome to your Expo app 👋
+# App Menu a la Orden
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+App movil de pagina menu a la orden, trabajo final de laboratorio de programacion.
 
-## Get started
+## Funcionalidades
+
+- [x] Listado de menus de todos los usuario
+- [x] Ingreso a la aplicacion
+- [ ] Registro en plataforma
+- [x] Alta de menu
+   - [x] Alta de items
+   - [x] Subida de imagenes desde la galeria 
+- [x] Edicion de menu
+   - [x] Eliminar items ya cargados
+   - [x] Cargar nuevos items
+- [x] Eliminar menu
+- [x] Templates (similares a los que de la web)
+
+- [ ] Autenticacion de EP de la api.
+
+## Instalar
 
 1. Install dependencies
 
