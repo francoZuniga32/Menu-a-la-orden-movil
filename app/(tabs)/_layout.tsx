@@ -27,7 +27,7 @@ export default function TabLayout() {
         name="ingresar"
         options={{
           title: 'Ingresar',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="person.fill" color={color} />,
         }}
       />
     </Tabs>

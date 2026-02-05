@@ -1,5 +1,6 @@
 import IItem from "@/models/IItem";
 import IMenu from "@/models/IMenu";
+import IUsuario from "@/models/IUsuario";
 import axios from "axios";
 
 const baseUrl : string = "http://192.168.0.63:3001";
@@ -20,6 +21,19 @@ export default {
             body: raw,
         };
         return fetch(baseUrl + "/usuario/login", requestOptions);
+    },
+
+    registrarUsuario(usaurio : IUsuario){
+    var myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+
+        var raw = JSON.stringify(usaurio);
+        var requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: raw,
+        };
+        return fetch(baseUrl + "/usuario/", requestOptions);
     },
     
     getMenus(){

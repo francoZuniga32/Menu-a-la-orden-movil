@@ -63,14 +63,18 @@ export default function Dashboard() {
         }
     }
 
+    const salir = ()=>{
+        router.push("/");
+    }
+
     return (
         <View style={styles.body}>
             <View style={styles.flexRow}>
                 <View style={styles.w100}>
-                    <Button title="Crear Menu" onPress={CrearMenu}></Button>
+                    <Button title="Salir" onPress={salir}></Button>
                 </View>
                 <View style={styles.w100}>
-                    <Button title=""></Button>
+                    <Button title="Crear Menu" onPress={CrearMenu}></Button>
                 </View>
             </View>
             <View>

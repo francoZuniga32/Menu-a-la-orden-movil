@@ -53,6 +53,8 @@ export default function CrearMenu() {
     }
 
     const agregarItem = () => {
+        var mensajeValidacion = validarCargaItem();
+        if(mensajeValidacion == ""){
         let item: IItem = {
             id: 0,
             titulo: tituloItem,
@@ -66,6 +68,11 @@ export default function CrearMenu() {
         //guardamos la imagen
         setFotos(prev => [...prev, image]);
         console.log(image, fotos);
+        }else{
+            Alert.alert("Error al cargar el item", mensajeValidacion, [
+                { text: 'OK', onPress: () => console.log('OK Pressed') },
+            ]);
+        }
     }
 
     const eliminarItem = (i: number) => {
@@ -100,50 +107,72 @@ export default function CrearMenu() {
     }
 
     const editarMenu = async () => {
-        let usuario = await keys.getUser();
-        let menuCrear: IMenu = {
-            id: parseInt(id),
-            nombre: nombre,
-            template: valor,
-            idUsuario: user ? user.id : 0
-        };
+        var mensajeValidacion = validarCargaMenu();
+        if(mensajeValidacion == ""){
 
-        let responseMenuEdit = await api.editarMenu(menuCrear);
-        if (responseMenuEdit.ok) {
-            let control = true;
-            if (itemsNuevos.length > 0) {
-                itemsNuevos.forEach(x => {
-                    x.idMenu = parseInt(id)
-                });
+            let menuCrear: IMenu = {
+                id: parseInt(id),
+                nombre: nombre,
+                template: valor,
+                idUsuario: user ? ( user.id ? user.id : 0 ) : 0
+            };
 
-                for (let i = 0; i < fotos.length; i++) {
-                    let foto = fotos[i];
-                    let responseFoto = await api.uploadFile(foto);
-                    console.log(responseFoto);
-                    itemsNuevos[i].foto = responseFoto.filename;
+            let responseMenuEdit = await api.editarMenu(menuCrear);
+            if (responseMenuEdit.ok) {
+                let control = true;
+                if (itemsNuevos.length > 0) {
+                    itemsNuevos.forEach(x => {
+                        x.idMenu = parseInt(id)
+                    });
+
+                    for (let i = 0; i < fotos.length; i++) {
+                        let foto = fotos[i];
+                        let responseFoto = await api.uploadFile(foto);
+                        console.log(responseFoto);
+                        itemsNuevos[i].foto = responseFoto.filename;
+                    }
+
+                    let responseItemsNuevos = await api.crearItem(itemsNuevos);
+                    console.log(responseItemsNuevos);
+                    control = control && responseItemsNuevos.ok;
                 }
 
-                let responseItemsNuevos = await api.crearItem(itemsNuevos);
-                console.log(responseItemsNuevos);
-                control = control && responseItemsNuevos.ok;
+                if (itemsEliminar.length > 0) {
+
+                    let responseItemsEliminar = await api.eliminarItem(itemsEliminar);
+                    console.log({ items: itemsEliminar, respuesta: responseItemsEliminar });
+                    control = control && responseItemsEliminar.ok;
+                }
+
+                if (control) router.push("/dashboard");
+                else Alert.alert('Error', "Error al tratar de eliminar o agregar items al menu", [
+                    { text: 'OK', onPress: () => console.log('OK Pressed') },
+                ]);
+            } else {
+                Alert.alert('Error', "Error al tratar de editar el menu", [
+                    { text: 'OK', onPress: () => console.log('OK Pressed') },
+                ]);
             }
-
-            if (itemsEliminar.length > 0) {
-
-                let responseItemsEliminar = await api.eliminarItem(itemsEliminar);
-                console.log({ items: itemsEliminar, respuesta: responseItemsEliminar });
-                control = control && responseItemsEliminar.ok;
-            }
-
-            if (control) router.push("/dashboard");
-            else Alert.alert('Error', "Error al tratar de eliminar o agregar items al menu", [
-                { text: 'OK', onPress: () => console.log('OK Pressed') },
-            ]);
-        } else {
-            Alert.alert('Error', "Error al tratar de editar el menu", [
+        }else{
+            Alert.alert("Error al editar el menu", mensajeValidacion, [
                 { text: 'OK', onPress: () => console.log('OK Pressed') },
             ]);
         }
+    }
+
+    const validarCargaItem = () => {
+        var mensaje = "";
+        if (tituloItem == "") mensaje += "tiene que cargar el titulo de un item. \n";
+        if (precioItem == "") mensaje += "tiene que cargar el precio de un item. \n";
+        if (descripcion == "") mensaje += "tiene una descripcion para el item. \n";
+        return mensaje;
+    }
+
+    const validarCargaMenu = () => {
+        var mensaje = "";
+        if (nombre == "") mensaje += "tiene que cargar un nombre al menu.\n";
+        if (items.length == 0) mensaje += "tiene que agregar items al menu.\n";
+        return mensaje;
     }
 
     let css = StyleSheet.create({
@@ -192,12 +221,9 @@ export default function CrearMenu() {
                     <TextInput style={styles.input} onChangeText={setPrecioItem} keyboardType='number-pad'></TextInput>
                     <Text style={styles.parrafo}>Descripcion</Text>
                     <TextInput style={styles.input} onChangeText={setDescripcionItem}></TextInput>
-                    <View style={{ display: "flex", flexDirection: "row", marginTop: 20, height: "auto", minHeight: 100 }}>
-                        <View style={{ width: "90%" }}>
-                            <Image
-                                style={{ width: "auto", height: "auto", minHeight: 100 }}
-                                source={{ uri: image?.uri }}
-                            />
+                    <View style={{ display: "flex", flexDirection: "row", marginTop: 20, height: "auto" }}>
+                        <View style={{ width: "90%", borderWidth: 1, borderColor: "white", borderRadius: 2, marginRight: 4, padding: 5 }}>
+                            <Text style={styles.parrafo}>{image?.fileName}</Text>
                         </View>
                         <TouchableOpacity onPress={loadFile} style={styles.button_image}>
                             <Image source={require('@/assets/images/add_photo.png')} style={{ width: 30 }} />

@@ -79,7 +79,7 @@ export default function CrearMenu() {
                 id: null,
                 nombre: nombre,
                 template: valor,
-                idUsuario: user ? user.id : 0
+                idUsuario: user ? ( user.id ? user.id : 0 )  : 0
             };
 
             let responseMenu = await api.crearMenu(menuCrear);

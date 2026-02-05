@@ -42,6 +42,10 @@ export default function ingresar() {
       });
   }
 
+  const registrarme = ()=>{
+    router.push('/registrar');
+  }
+
   async function ObtnerToken(){
     let token = await keys.getToken();
     console.log(token);
@@ -67,6 +71,12 @@ export default function ingresar() {
         onPress={() => Ingresar()}
         title="Ingresar"
         accessibilityLabel="Learn more about this purple button"
+      />
+      
+      <Button
+        onPress={() => registrarme()}
+        title="Registrarme"
+        accessibilityLabel=""
       />
     </ParallaxScrollView>
   );

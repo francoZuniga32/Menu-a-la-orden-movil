@@ -1,5 +1,5 @@
 export default interface IUsuario{
-    id: number,
+    id: number | null,
     username: string,
     nombre: string,
     password: string,
