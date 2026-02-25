@@ -8,6 +8,7 @@ import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import { Alert, Button, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 
+import claves from "@/api/claves";
 import media from "@/api/media";
 import styles from "@/styles/css";
 import { Image } from "expo-image";
@@ -116,8 +117,9 @@ export default function CrearMenu() {
                 template: valor,
                 idUsuario: user ? ( user.id ? user.id : 0 ) : 0
             };
-
-            let responseMenuEdit = await api.editarMenu(menuCrear);
+            let token : string | null | undefined = await claves.getToken();
+            
+            let responseMenuEdit = await api.editarMenu(menuCrear, token);
             if (responseMenuEdit.ok) {
                 let control = true;
                 if (itemsNuevos.length > 0) {
@@ -132,14 +134,14 @@ export default function CrearMenu() {
                         itemsNuevos[i].foto = responseFoto.filename;
                     }
 
-                    let responseItemsNuevos = await api.crearItem(itemsNuevos);
+                    let responseItemsNuevos = await api.crearItem(itemsNuevos, token);
                     console.log(responseItemsNuevos);
                     control = control && responseItemsNuevos.ok;
                 }
 
                 if (itemsEliminar.length > 0) {
 
-                    let responseItemsEliminar = await api.eliminarItem(itemsEliminar);
+                    let responseItemsEliminar = await api.eliminarItem(itemsEliminar, token);
                     console.log({ items: itemsEliminar, respuesta: responseItemsEliminar });
                     control = control && responseItemsEliminar.ok;
                 }

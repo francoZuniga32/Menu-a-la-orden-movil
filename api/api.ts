@@ -3,10 +3,11 @@ import IMenu from "@/models/IMenu";
 import IUsuario from "@/models/IUsuario";
 import axios from "axios";
 
-const baseUrl : string = "http://192.168.0.63:3001";
+const baseUrl : string = "http://francozuniga32.duckdns.org:3001";
 
 export default {
-    baseUrl: "http://192.168.0.63:3001",
+    baseUrl: "http://francozuniga32.duckdns.org:3001",
+    
     login(usuario:string, contrasenia:string){
         var myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/json");
@@ -24,7 +25,7 @@ export default {
     },
 
     registrarUsuario(usaurio : IUsuario){
-    var myHeaders = new Headers();
+        var myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/json");
 
         var raw = JSON.stringify(usaurio);
@@ -83,10 +84,11 @@ export default {
         });
     },
 
-    crearMenu(menu: IMenu){
+    crearMenu(menu: IMenu, token: string | null | undefined ){
         var myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/json");
-        
+        myHeaders.append("authorization", "Bearer "+(token ? token : ""));
+
         var requestOptions = {
             method: 'POST',
             headers: myHeaders,
@@ -96,10 +98,11 @@ export default {
         return fetch(baseUrl + "/menus/", requestOptions);
 
     },
-    editarMenu(menu: IMenu){
+    editarMenu(menu: IMenu, token: string | null | undefined){
         var myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/json");
-        
+        myHeaders.append("authorization", "Bearer "+(token ? token : ""));
+
         var requestOptions = {
             method: 'PUT',
             headers: myHeaders,
@@ -108,9 +111,10 @@ export default {
         console.log(menu);
         return fetch(baseUrl + "/menus/"+menu.id, requestOptions);
     },
-    crearItem(item: IItem[]){
+    crearItem(item: IItem[], token: string | null | undefined){
         var myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/json");
+        myHeaders.append("authorization", "Bearer "+(token ? token : ""));
 
         var requestOptions = {
             method: 'POST',
@@ -120,9 +124,10 @@ export default {
 
         return fetch(baseUrl + "/menus/items/", requestOptions);
     },
-    eliminarMenu(id: number){
+    eliminarMenu(id: number, token: string | null | undefined){
         var myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/json");
+        myHeaders.append("authorization", "Bearer "+(token ? token : ""));
 
         var requestOptions = {
             method: 'DELETE',
@@ -131,9 +136,10 @@ export default {
 
         return fetch(baseUrl + "/menus/"+id, requestOptions);
     },
-    eliminarItem( items:IItem[] ){
+    eliminarItem( items:IItem[], token : string | null | undefined ){
         var myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/json");
+        myHeaders.append("authorization", "Bearer "+(token ? token : ""));
 
         var requestOptions = { 
             method: 'DELETE',

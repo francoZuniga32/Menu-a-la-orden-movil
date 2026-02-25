@@ -6,6 +6,7 @@ import { router } from 'expo-router';
 import { useEffect, useState } from "react";
 import { Button, View } from "react-native";
 
+import claves from '@/api/claves';
 import styles from "@/styles/css";
 
 export default function Dashboard() {
@@ -56,8 +57,10 @@ export default function Dashboard() {
             api.getMenu(id)
             .then(result => result.json())
             .then(async data => {
-                await api.eliminarMenu(data.id);
-                await api.eliminarItem(data.items);
+                let token : string | null | undefined = await claves.getToken();
+
+                await api.eliminarMenu(data.id, token);
+                await api.eliminarItem(data.items, token);
                 await listarMenus();
             })
         }

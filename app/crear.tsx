@@ -72,6 +72,7 @@ export default function CrearMenu() {
 
     const crearMenu = async () => {
         let usuario = await keys.getUser();
+        let token : string | null | undefined = await keys.getToken();
 
         let mensajeValidacion = validarCargaMenu();
         if (mensajeValidacion == "") {
@@ -82,7 +83,7 @@ export default function CrearMenu() {
                 idUsuario: user ? ( user.id ? user.id : 0 )  : 0
             };
 
-            let responseMenu = await api.crearMenu(menuCrear);
+            let responseMenu = await api.crearMenu(menuCrear, token);
             if (responseMenu.ok) {
                 let dataMenu = await responseMenu.json();
                 console.log("menu creado:" + dataMenu);
@@ -100,7 +101,7 @@ export default function CrearMenu() {
                     items[i].foto = responseFoto.filename;
                 }
 
-                let responseItems = await api.crearItem(items);
+                let responseItems = await api.crearItem(items, token);
                 if (responseItems.ok) {
                     router.push("/dashboard");
                 } else {
