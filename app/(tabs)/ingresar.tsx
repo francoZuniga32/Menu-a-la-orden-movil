@@ -11,15 +11,14 @@ import { router } from 'expo-router';
 
 import styles from "@/styles/css";
 
-export default function ingresar() {
+export default function Ingresar() {
   const [usuario, setUsuario] = useState('');
   const [contasenia, setContasenia] = useState('');
   const [user, setUser] = useState();
 
-  const [token, setToken] = useState<String | null | undefined>('');
+  const [token, setToken] = useState<string | null | undefined>('');
 
   function Ingresar(){
-    console.log(usuario, contasenia)
     api.ingresar(usuario, contasenia)
       .then(response => { 
         if(!response.ok) {
@@ -28,14 +27,13 @@ export default function ingresar() {
         return response.json();
       })
       .then(async data => { 
-        console.log(data);
         await keys.addToken(data.token);
         await keys.addUser(JSON.stringify(data.user));
 
         setUser(data.user);
         router.push('/dashboard');
       })
-      .catch(err => { 
+      .catch(() => { 
         Alert.alert('Error', 'El usuario o contraseña no son correctos.', [
           {text: 'OK', onPress: () => console.log('OK Pressed')},
         ]);
@@ -46,11 +44,11 @@ export default function ingresar() {
     router.push('/registrar');
   }
 
-  async function ObtnerToken(){
+  /* async function ObtnerToken(){ //TODO  no se usa nunca xd
     let token = await keys.getToken();
     console.log(token);
     setToken(token);
-  }
+  } */
 
   return (
     <ParallaxScrollView

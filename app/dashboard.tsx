@@ -20,11 +20,11 @@ export default function Dashboard() {
     const [token, setToken] = useState<String | null | undefined>('');
     const [user, setUser] = useState<IUsuario>();
 
-    async function ObtnerToken() {
+    /* async function ObtnerToken() { //TODO  no se usa nunca xd
         let token = await keys.getToken();
         console.log(token);
         setToken(token);
-    }
+    } */
 
     useEffect(() => {
         listarMenus();
@@ -34,15 +34,12 @@ export default function Dashboard() {
         let user: any = await keys.getUser();
             user = JSON.parse(user);
             setUser(user);
-            console.log(user);
             api.menusUsuario(user.id)
                 .then(result => {
-                    console.log(result);
                     return result.data;
                 })
                 .then(data => {
                     setMenu(data);
-                    console.log(data);
                 })
                 .catch(err => console.error(err));
     }

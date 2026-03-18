@@ -13,11 +13,9 @@ export default StyleSheet.create({
         borderBottomColor: '#757575',
         borderStyle: 'solid', // Opcional, ya que solid es el default
         
-        // Suponiendo que tu base es 16px (1rem = 16px)
         padding: 16, 
         
-        // 'filter: drop-shadow' no existe como tal. 
-        // Para quitar sombras, simplemente no las declares o ponlas en 0:
+        
         shadowColor: 'transparent',
         shadowOffset: { width: 0, height: 0 },
         shadowOpacity: 0,

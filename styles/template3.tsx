@@ -22,7 +22,6 @@ export default StyleSheet.create({
         // El margen porcentual sí funciona
         marginBottom: '2%',
 
-        // --- SOMBRA (Reemplazo de drop-shadow) ---
         // En iOS:
         shadowColor: '#000000',
         shadowOffset: { width: 2, height: 2 },

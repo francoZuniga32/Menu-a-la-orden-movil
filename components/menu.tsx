@@ -19,8 +19,9 @@ export default function Menu({
         router.push(`/vermenu/${id}`);
     };
 
+    //cosas clcikeables
     return (
-        <TouchableOpacity style={styles.menu} onPress={verMenu}>
+        <TouchableOpacity style={styles.menu} onPress={verMenu}> 
             <Text style={styles.titulo}>{titulo}</Text>
             <Text style={styles.descripcion}>{descripcion}</Text>
         </TouchableOpacity>

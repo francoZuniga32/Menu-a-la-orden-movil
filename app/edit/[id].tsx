@@ -45,7 +45,6 @@ export default function CrearMenu() {
         api.getMenu(parseInt(id))
             .then(result => result.json())
             .then(data => {
-                console.log(data);
                 setNombre(data.nombre);
                 setValor(data.template);
                 setItems(data.items);
@@ -53,7 +52,7 @@ export default function CrearMenu() {
     }
 
     const agregarItem = () => {
-        var mensajeValidacion = validarCargaItem();
+        let mensajeValidacion = validarCargaItem();
         if(mensajeValidacion == ""){
         let item: IItem = {
             id: 0,
@@ -82,7 +81,6 @@ export default function CrearMenu() {
         //eliminamos el item de la vista
         itemsEliminado.splice(i, 1);
         setItems(itemsEliminado);
-        console.log(itemsEliminado)
     }
 
 
@@ -99,7 +97,6 @@ export default function CrearMenu() {
 
     const loadFile = async () => {
         let foto = await media.pickFile();
-        console.log(foto);
         if (foto) {
             setImage(foto);
             //await api.uploadFile(foto);
@@ -107,7 +104,7 @@ export default function CrearMenu() {
     }
 
     const editarMenu = async () => {
-        var mensajeValidacion = validarCargaMenu();
+        let mensajeValidacion = validarCargaMenu();
         if(mensajeValidacion == ""){
 
             let menuCrear: IMenu = {
@@ -128,19 +125,16 @@ export default function CrearMenu() {
                     for (let i = 0; i < fotos.length; i++) {
                         let foto = fotos[i];
                         let responseFoto = await api.uploadFile(foto);
-                        console.log(responseFoto);
                         itemsNuevos[i].foto = responseFoto.filename;
                     }
 
                     let responseItemsNuevos = await api.crearItem(itemsNuevos);
-                    console.log(responseItemsNuevos);
                     control = control && responseItemsNuevos.ok;
                 }
 
                 if (itemsEliminar.length > 0) {
 
                     let responseItemsEliminar = await api.eliminarItem(itemsEliminar);
-                    console.log({ items: itemsEliminar, respuesta: responseItemsEliminar });
                     control = control && responseItemsEliminar.ok;
                 }
 
@@ -161,7 +155,7 @@ export default function CrearMenu() {
     }
 
     const validarCargaItem = () => {
-        var mensaje = "";
+        let mensaje = "";
         if (tituloItem == "") mensaje += "tiene que cargar el titulo de un item. \n";
         if (precioItem == "") mensaje += "tiene que cargar el precio de un item. \n";
         if (descripcion == "") mensaje += "tiene una descripcion para el item. \n";
@@ -169,7 +163,7 @@ export default function CrearMenu() {
     }
 
     const validarCargaMenu = () => {
-        var mensaje = "";
+        let mensaje = "";
         if (nombre == "") mensaje += "tiene que cargar un nombre al menu.\n";
         if (items.length == 0) mensaje += "tiene que agregar items al menu.\n";
         return mensaje;

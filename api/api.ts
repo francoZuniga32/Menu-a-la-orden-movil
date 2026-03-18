@@ -3,19 +3,19 @@ import IMenu from "@/models/IMenu";
 import IUsuario from "@/models/IUsuario";
 import axios from "axios";
 
-const baseUrl : string = "http://192.168.0.63:3001";
+const baseUrl : string = "http://192.168.0.112:3001" //"http://192.168.0.63:3001";
 
 export default {
-    baseUrl: "http://192.168.0.63:3001",
+    baseUrl:  "http://192.168.0.112:3001",//"http://192.168.0.63:3001", //192.168.0.112
     login(usuario:string, contrasenia:string){
-        var myHeaders = new Headers();
+        let myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/json");
 
-        var raw = JSON.stringify({
+        let raw = JSON.stringify({
             "username": usuario,
             "password": contrasenia
         });
-        var requestOptions = {
+        let requestOptions = {
             method: 'POST',
             headers: myHeaders,
             body: raw,
@@ -24,11 +24,11 @@ export default {
     },
 
     registrarUsuario(usaurio : IUsuario){
-    var myHeaders = new Headers();
+    let myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/json");
 
-        var raw = JSON.stringify(usaurio);
-        var requestOptions = {
+        let raw = JSON.stringify(usaurio);
+        let requestOptions = {
             method: 'POST',
             headers: myHeaders,
             body: raw,
@@ -37,10 +37,10 @@ export default {
     },
     
     getMenus(){
-        var myHeaders = new Headers();
+        let myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/json");
 
-        var requestOptions = {
+        let requestOptions = {
             method: 'GET',
             headers: myHeaders,
         };
@@ -48,10 +48,10 @@ export default {
     },
 
     getMenu(id:number|null){
-        var myHeaders = new Headers();
+        let myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/json");
 
-        var requestOptions = {
+        let requestOptions = {
             method: 'GET',
             headers: myHeaders,
         };
@@ -59,10 +59,10 @@ export default {
     },
 
     ingresar(usuario:string, contrasenia: string){
-        var myHeaders = new Headers();
+        let myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/json");
 
-        var requestOptions = {
+        let requestOptions = {
             method: 'POST',
             headers: myHeaders,
             body: JSON.stringify({
@@ -84,10 +84,10 @@ export default {
     },
 
     crearMenu(menu: IMenu){
-        var myHeaders = new Headers();
+        let myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/json");
         
-        var requestOptions = {
+        let requestOptions = {
             method: 'POST',
             headers: myHeaders,
             body: JSON.stringify(menu)
@@ -97,22 +97,21 @@ export default {
 
     },
     editarMenu(menu: IMenu){
-        var myHeaders = new Headers();
+        let myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/json");
         
-        var requestOptions = {
+        let requestOptions = {
             method: 'PUT',
             headers: myHeaders,
             body: JSON.stringify(menu)
         };
-        console.log(menu);
         return fetch(baseUrl + "/menus/"+menu.id, requestOptions);
     },
     crearItem(item: IItem[]){
-        var myHeaders = new Headers();
+        let myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/json");
 
-        var requestOptions = {
+        let requestOptions = {
             method: 'POST',
             headers: myHeaders,
             body: JSON.stringify({items: item})
@@ -121,10 +120,10 @@ export default {
         return fetch(baseUrl + "/menus/items/", requestOptions);
     },
     eliminarMenu(id: number){
-        var myHeaders = new Headers();
+        let myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/json");
 
-        var requestOptions = {
+        let requestOptions = {
             method: 'DELETE',
             headers: myHeaders
         };
@@ -132,10 +131,10 @@ export default {
         return fetch(baseUrl + "/menus/"+id, requestOptions);
     },
     eliminarItem( items:IItem[] ){
-        var myHeaders = new Headers();
+        let myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/json");
 
-        var requestOptions = { 
+        let requestOptions = { 
             method: 'DELETE',
             headers: myHeaders,
             body: JSON.stringify({

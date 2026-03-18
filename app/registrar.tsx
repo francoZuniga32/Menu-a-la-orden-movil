@@ -16,11 +16,10 @@ export default function Registrar() {
     const [verConfirmPass, setVerConfirmPass] = useState<boolean>(false);
 
     const registrar = async ()=>{
-        var mensaje = validar();
-        console.log(mensaje);
+        let mensaje = validar();
         if(mensaje == ""){
             try{
-                var usuario : IUsuario = {
+                let usuario : IUsuario = {
                     id: 0,
                     username: username ? username : "",
                     password: password ? password : "",
@@ -28,12 +27,9 @@ export default function Registrar() {
                     apellidos: apellido ? apellido : "",
                     email: email ? email : ""
                 };
-                console.log(usuario);
-                var response = await api.registrarUsuario(usuario);
-                console.log(response);
+                let response = await api.registrarUsuario(usuario);
                 if(response.ok){
-                    var data = response.json();
-                    console.log(data);
+                    let data = response.json();
                     router.push("/(tabs)/ingresar");
                 }else{
                     Alert.alert("Error al cargar el menu.", "Error al registrar el usuario.", [
@@ -41,7 +37,7 @@ export default function Registrar() {
                     ]);
                 }
             }catch(err){
-
+                console.log(err)
             }
 
         }else{
@@ -84,7 +80,7 @@ export default function Registrar() {
     
     const validarFuerzaPass = ()=>{
         //validamos que tenga algun numero
-        var passwordRegex = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/;
+        let passwordRegex = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/;
         if(password) return passwordRegex.test(password);
         else return false;
     }
@@ -104,7 +100,7 @@ export default function Registrar() {
             <TextInput style={style.input} onChangeText={setPassword} secureTextEntry={!verPass}></TextInput>
             <Text style={style.parrafo}>Confirmar Contraseña</Text>
             <TextInput style={style.input} onChangeText={setPasswordConfirm} secureTextEntry={!verConfirmPass}></TextInput>
-            <Button title="Registar" onPress={registrar}></Button>
+            <Button title="Registrar" onPress={registrar}></Button>
         </View>
     )
 }

@@ -1,4 +1,4 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage'; //setear y guardar info, guardar info token y obtener user
 
 export default {
     async addToken(token:string){
@@ -19,7 +19,8 @@ export default {
         try{
             await AsyncStorage.setItem('user', usaurio);
         }catch(err){
-            console.error("Fallo");
+            //console.error("Fallo");
+            console.error(err);
         }
     },
     async getUser(){
@@ -27,7 +28,8 @@ export default {
             const token = await AsyncStorage.getItem('user');
             return token;
         }catch(err){
-            console.error("Fallo");
+            //console.error("Fallo");
+            console.error(err);
         }
     }
 };

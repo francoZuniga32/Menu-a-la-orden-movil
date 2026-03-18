@@ -20,7 +20,7 @@ type Props = PropsWithChildren<{
   tituloCss: StyleProp<TextStyle>,
   textCss: StyleProp<TextStyle>
 }>;
-
+//creo los estilos con styleprop
 export default function ItemMenu({
         id,
         titulo,
