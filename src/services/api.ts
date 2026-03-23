@@ -1,12 +1,12 @@
+import { BACKEND_URL } from "@/constants/config";
 import IItem from "@/models/IItem";
 import IMenu from "@/models/IMenu";
 import IUsuario from "@/models/IUsuario";
 import axios from "axios";
 
-const baseUrl : string = "http://192.168.0.112:3001" //"http://192.168.0.63:3001";
-
 export default {
-    baseUrl:  "http://192.168.0.112:3001",//"http://192.168.0.63:3001", //192.168.0.112
+    baseUrl : BACKEND_URL,
+
     login(usuario:string, contrasenia:string){
         let myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/json");
@@ -20,7 +20,7 @@ export default {
             headers: myHeaders,
             body: raw,
         };
-        return fetch(baseUrl + "/usuario/login", requestOptions);
+        return fetch(this.baseUrl + "/usuario/login", requestOptions);
     },
 
     registrarUsuario(usaurio : IUsuario){
@@ -33,18 +33,18 @@ export default {
             headers: myHeaders,
             body: raw,
         };
-        return fetch(baseUrl + "/usuario/", requestOptions);
+        return fetch(this.baseUrl + "/usuario/", requestOptions);
     },
     
     getMenus(){
         let myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/json");
-
+        console.log(process.env.BACKEND);
         let requestOptions = {
             method: 'GET',
             headers: myHeaders,
         };
-        return fetch(baseUrl + "/menus", requestOptions);
+        return fetch(this.baseUrl + "/menus", requestOptions);
     },
 
     getMenu(id:number|null){
@@ -55,7 +55,7 @@ export default {
             method: 'GET',
             headers: myHeaders,
         };
-        return fetch(baseUrl + "/menus/"+id, requestOptions);
+        return fetch(this.baseUrl + "/menus/"+id, requestOptions);
     },
 
     ingresar(usuario:string, contrasenia: string){
@@ -70,7 +70,7 @@ export default {
                 password: contrasenia
             })
         };
-        return fetch(baseUrl + "/usuario/login", requestOptions);
+        return fetch(this.baseUrl + "/usuario/login", requestOptions);
     },
 
     menusUsuario(idUsuario:number){
@@ -78,7 +78,7 @@ export default {
 
         return axios({
             method: 'get',
-            url: baseUrl + "/menus/usuario/"+idUsuario,
+            url: this.baseUrl + "/menus/usuario/"+idUsuario,
             headers: headers
         });
     },
@@ -93,7 +93,7 @@ export default {
             body: JSON.stringify(menu)
         };
 
-        return fetch(baseUrl + "/menus/", requestOptions);
+        return fetch(this.baseUrl + "/menus/", requestOptions);
 
     },
     editarMenu(menu: IMenu){
@@ -105,7 +105,7 @@ export default {
             headers: myHeaders,
             body: JSON.stringify(menu)
         };
-        return fetch(baseUrl + "/menus/"+menu.id, requestOptions);
+        return fetch(this.baseUrl + "/menus/"+menu.id, requestOptions);
     },
     crearItem(item: IItem[]){
         let myHeaders = new Headers();
@@ -117,7 +117,7 @@ export default {
             body: JSON.stringify({items: item})
         };
 
-        return fetch(baseUrl + "/menus/items/", requestOptions);
+        return fetch(this.baseUrl + "/menus/items/", requestOptions);
     },
     eliminarMenu(id: number){
         let myHeaders = new Headers();
@@ -128,7 +128,7 @@ export default {
             headers: myHeaders
         };
 
-        return fetch(baseUrl + "/menus/"+id, requestOptions);
+        return fetch(this.baseUrl + "/menus/"+id, requestOptions);
     },
     eliminarItem( items:IItem[] ){
         let myHeaders = new Headers();
@@ -142,18 +142,18 @@ export default {
             })
         };
 
-        return fetch(baseUrl + "/menus/items", requestOptions);
+        return fetch(this.baseUrl + "/menus/items", requestOptions);
     },
     uploadFile: async (file : any)=>{
         const formData = new FormData();
-
+        
         formData.append("miniatura", {
             uri: file.uri,
             name: file.fileName ?? "archivo.jpg",
             type: file.mimeType ?? "image/jpeg",
         } as any);
 
-        const response = await fetch(baseUrl+"/upload", {
+        const response = await fetch(this.baseUrl+"/upload", {
             method: "POST",
             headers: {
                 "Content-Type": "multipart/form-data",

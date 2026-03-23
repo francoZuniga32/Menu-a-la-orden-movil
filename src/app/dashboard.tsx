@@ -1,7 +1,7 @@
-import api from '@/api/api';
-import keys from '@/api/claves';
-import Menu from '@/components/menu_edit';
+import Menu from '@/components/menu/menu_edit';
 import IUsuario from '@/models/IUsuario';
+import api from '@/services/api';
+import keys from '@/services/claves';
 import { router } from 'expo-router';
 import { useEffect, useState } from "react";
 import { Button, View } from "react-native";

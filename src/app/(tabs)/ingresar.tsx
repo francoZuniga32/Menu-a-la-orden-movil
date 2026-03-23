@@ -1,12 +1,12 @@
 import { Alert, Button, Text } from 'react-native';
 
-import api from '@/api/api';
 import ParallaxScrollView from '@/components/parallax-scroll-view';
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import api from '@/services/api';
 import { useState } from 'react';
 import { TextInput } from 'react-native';
 
-import keys from '@/api/claves';
+import keys from '@/services/claves';
 import { router } from 'expo-router';
 
 import styles from "@/styles/css";

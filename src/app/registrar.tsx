@@ -1,5 +1,5 @@
-import api from "@/api/api";
 import IUsuario from "@/models/IUsuario";
+import api from "@/services/api";
 import style from "@/styles/css";
 import { router } from "expo-router";
 import { useState } from "react";

@@ -1,6 +1,6 @@
-import api from '@/api/api';
-import Menu from '@/components/menu';
+import Menu from '@/components/menu/menu';
 import IMenu from '@/models/IMenu';
+import api from '@/services/api';
 import { Image } from 'expo-image';
 import { Text, View } from 'react-native';
 

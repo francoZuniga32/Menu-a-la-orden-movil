@@ -1,6 +1,8 @@
 import { router } from "expo-router";
 import { PropsWithChildren } from "react";
-import { Button, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Button, Text, TouchableOpacity, View } from "react-native";
+
+import styles from "./style";
 
 type Props = PropsWithChildren<{
   id: number | null,
@@ -35,25 +37,3 @@ export default function MenuEdit({
         </View>
     )
 }
-
-const styles = StyleSheet.create({
-    menu:{
-        borderColor: "#fff",
-        borderWidth: 1,
-        borderRadius: 4,
-        marginBottom: 10,
-        padding: 5,
-        display: "flex",
-        flexDirection: "row"
-    },
-    menuBody:{
-        width: "90%"
-    },
-    titulo:{
-        color: "#fff",
-        fontSize: 20,
-    },
-    descripcion:{
-        color: "#fff"
-    }
-})

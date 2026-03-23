@@ -1,6 +1,6 @@
-import api from "@/api/api";
-import ItemMenu from "@/components/item_menu";
+import ItemMenu from "@/components/item_menu/item_menu";
 import IMenu from "@/models/IMenu";
+import api from "@/services/api";
 import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";

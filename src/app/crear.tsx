@@ -1,25 +1,25 @@
-import api from "@/api/api";
-import keys from "@/api/claves";
 import IItem from "@/models/IItem";
 import IMenu from "@/models/IMenu";
 import IUsuario from "@/models/IUsuario";
+import api from "@/services/api";
+import keys from "@/services/claves";
 import { Picker } from "@react-native-picker/picker";
 import { router } from "expo-router";
 import { useEffect, useState } from "react";
 import {
-  Alert,
-  Button,
-  Image,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
+    Alert,
+    Button,
+    Image,
+    StyleSheet,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    View,
 } from "react-native";
 
 import styles from "@/styles/css";
 
-import media from "@/api/media";
+import media from "@/services/media";
 import { ImagePickerAsset } from "expo-image-picker";
 
 export default function CrearMenu() {
