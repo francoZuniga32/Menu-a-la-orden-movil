@@ -6,7 +6,7 @@ import IUsuario from "@/models/IUsuario";
 import { Picker } from '@react-native-picker/picker';
 import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
-import { Alert, Button, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Alert, Button, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 
 import claves from "@/api/claves";
 import media from "@/api/media";
@@ -46,7 +46,6 @@ export default function CrearMenu() {
         api.getMenu(parseInt(id))
             .then(result => result.json())
             .then(data => {
-                console.log(data);
                 setNombre(data.nombre);
                 setValor(data.template);
                 setItems(data.items);
@@ -54,7 +53,7 @@ export default function CrearMenu() {
     }
 
     const agregarItem = () => {
-        var mensajeValidacion = validarCargaItem();
+        let mensajeValidacion = validarCargaItem();
         if(mensajeValidacion == ""){
         let item: IItem = {
             id: 0,
@@ -68,7 +67,6 @@ export default function CrearMenu() {
         setItemsNuevos(prev => [...prev, item]);
         //guardamos la imagen
         setFotos(prev => [...prev, image]);
-        console.log(image, fotos);
         }else{
             Alert.alert("Error al cargar el item", mensajeValidacion, [
                 { text: 'OK', onPress: () => console.log('OK Pressed') },
@@ -83,7 +81,6 @@ export default function CrearMenu() {
         //eliminamos el item de la vista
         itemsEliminado.splice(i, 1);
         setItems(itemsEliminado);
-        console.log(itemsEliminado)
     }
 
 
@@ -100,7 +97,6 @@ export default function CrearMenu() {
 
     const loadFile = async () => {
         let foto = await media.pickFile();
-        console.log(foto);
         if (foto) {
             setImage(foto);
             //await api.uploadFile(foto);
@@ -108,7 +104,7 @@ export default function CrearMenu() {
     }
 
     const editarMenu = async () => {
-        var mensajeValidacion = validarCargaMenu();
+        let mensajeValidacion = validarCargaMenu();
         if(mensajeValidacion == ""){
 
             let menuCrear: IMenu = {
@@ -130,19 +126,16 @@ export default function CrearMenu() {
                     for (let i = 0; i < fotos.length; i++) {
                         let foto = fotos[i];
                         let responseFoto = await api.uploadFile(foto);
-                        console.log(responseFoto);
                         itemsNuevos[i].foto = responseFoto.filename;
                     }
 
                     let responseItemsNuevos = await api.crearItem(itemsNuevos, token);
-                    console.log(responseItemsNuevos);
                     control = control && responseItemsNuevos.ok;
                 }
 
                 if (itemsEliminar.length > 0) {
 
                     let responseItemsEliminar = await api.eliminarItem(itemsEliminar, token);
-                    console.log({ items: itemsEliminar, respuesta: responseItemsEliminar });
                     control = control && responseItemsEliminar.ok;
                 }
 
@@ -163,7 +156,7 @@ export default function CrearMenu() {
     }
 
     const validarCargaItem = () => {
-        var mensaje = "";
+        let mensaje = "";
         if (tituloItem == "") mensaje += "tiene que cargar el titulo de un item. \n";
         if (precioItem == "") mensaje += "tiene que cargar el precio de un item. \n";
         if (descripcion == "") mensaje += "tiene una descripcion para el item. \n";
@@ -171,7 +164,7 @@ export default function CrearMenu() {
     }
 
     const validarCargaMenu = () => {
-        var mensaje = "";
+        let mensaje = "";
         if (nombre == "") mensaje += "tiene que cargar un nombre al menu.\n";
         if (items.length == 0) mensaje += "tiene que agregar items al menu.\n";
         return mensaje;
@@ -195,14 +188,14 @@ export default function CrearMenu() {
     })
 
     return (
-        <View style={styles.body}>
+        <ScrollView contentContainerStyle={styles.formBody} keyboardShouldPersistTaps="handled">
             <View>
-                <Text style={styles.parrafo}>Nombre</Text>
+                <Text style={styles.label}>Nombre</Text>
                 <TextInput style={styles.input} value={nombre} onChangeText={setNombre}></TextInput>
             </View>
             <View>
-                <Text style={styles.parrafo}>Template</Text>
-                <View style={styles.input}>
+                <Text style={styles.label}>Template</Text>
+                <View style={styles.pickerWrap}>
                     <Picker
                         style={{ color: "white" }}
                         selectedValue={valor}
@@ -215,13 +208,13 @@ export default function CrearMenu() {
                 </View>
             </View>
             <View>
-                <Text style={styles.title}>Agregar Item</Text>
+                <Text style={styles.sectionTitle}>Nuevo ítem</Text>
                 <View>
-                    <Text style={styles.parrafo}>Titulo Item</Text>
+                    <Text style={styles.label}>Titulo Item</Text>
                     <TextInput style={styles.input} onChangeText={setTituloItem}></TextInput>
-                    <Text style={styles.parrafo}>Precio Item</Text>
+                    <Text style={styles.label}>Precio Item</Text>
                     <TextInput style={styles.input} onChangeText={setPrecioItem} keyboardType='number-pad'></TextInput>
-                    <Text style={styles.parrafo}>Descripcion</Text>
+                    <Text style={styles.label}>Descripcion</Text>
                     <TextInput style={styles.input} onChangeText={setDescripcionItem}></TextInput>
                     <View style={{ display: "flex", flexDirection: "row", marginTop: 20, height: "auto" }}>
                         <View style={{ width: "90%", borderWidth: 1, borderColor: "white", borderRadius: 2, marginRight: 4, padding: 5 }}>
@@ -283,10 +276,10 @@ export default function CrearMenu() {
                     ))
                 }
             </View>
-            <View>
+            <View style={styles.button}>
                 <Button title="Crear Menu" onPress={editarMenu}></Button>
             </View>
-        </View>
+        </ScrollView>
     )
 }
 

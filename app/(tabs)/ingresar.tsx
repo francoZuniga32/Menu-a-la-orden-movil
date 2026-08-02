@@ -19,7 +19,6 @@ export default function ingresar() {
   const [token, setToken] = useState<String | null | undefined>('');
 
   function Ingresar(){
-    console.log(usuario, contasenia)
     api.ingresar(usuario, contasenia)
       .then(response => { 
         if(!response.ok) {
@@ -28,7 +27,6 @@ export default function ingresar() {
         return response.json();
       })
       .then(async data => { 
-        console.log(data);
         await keys.addToken(data.token);
         await keys.addUser(JSON.stringify(data.user));
 
@@ -48,7 +46,6 @@ export default function ingresar() {
 
   async function ObtnerToken(){
     let token = await keys.getToken();
-    console.log(token);
     setToken(token);
   }
 

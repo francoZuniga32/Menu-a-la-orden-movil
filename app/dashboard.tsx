@@ -23,7 +23,6 @@ export default function Dashboard() {
 
     async function ObtnerToken() {
         let token = await keys.getToken();
-        console.log(token);
         setToken(token);
     }
 
@@ -35,15 +34,12 @@ export default function Dashboard() {
         let user: any = await keys.getUser();
             user = JSON.parse(user);
             setUser(user);
-            console.log(user);
             api.menusUsuario(user.id)
                 .then(result => {
-                    console.log(result);
                     return result.data;
                 })
                 .then(data => {
                     setMenu(data);
-                    console.log(data);
                 })
                 .catch(err => console.error(err));
     }

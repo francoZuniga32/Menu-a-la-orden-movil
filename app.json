@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "manu_a_la_orden_app",
-    "slug": "manu_a_la_orden_app",
+    "name": "menu_a_la_orden_app",
+    "slug": "menu_a_la_orden_app",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "manualaordenapp",
+    "scheme": "menualaordenapp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {

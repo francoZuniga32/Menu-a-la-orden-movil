@@ -58,7 +58,6 @@ export default function vermenu() {
     api.getMenu(parseInt(id)).then(x => x.json()).then(data => {
       setMenu(data)
       setItems(data.items);
-      console.log(data);
 
       switch (data.template) {
         case "template1":
