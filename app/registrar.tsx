@@ -3,7 +3,7 @@ import IUsuario from "@/models/IUsuario";
 import style from "@/styles/css";
 import { router } from "expo-router";
 import { useState } from "react";
-import { Alert, Button, Text, TextInput, View } from "react-native";
+import { Alert, Button, ScrollView, Text, TextInput, View } from "react-native";
 
 export default function Registrar() {
     const [nombre, setNombre] = useState<string>();
@@ -16,11 +16,10 @@ export default function Registrar() {
     const [verConfirmPass, setVerConfirmPass] = useState<boolean>(false);
 
     const registrar = async ()=>{
-        var mensaje = validar();
-        console.log(mensaje);
+        let mensaje = validar();
         if(mensaje == ""){
             try{
-                var usuario : IUsuario = {
+                let usuario : IUsuario = {
                     id: 0,
                     username: username ? username : "",
                     password: password ? password : "",
@@ -28,12 +27,9 @@ export default function Registrar() {
                     apellidos: apellido ? apellido : "",
                     email: email ? email : ""
                 };
-                console.log(usuario);
-                var response = await api.registrarUsuario(usuario);
-                console.log(response);
+                let response = await api.registrarUsuario(usuario);
                 if(response.ok){
-                    var data = response.json();
-                    console.log(data);
+                    let data = response.json();
                     router.push("/(tabs)/ingresar");
                 }else{
                     Alert.alert("Error al cargar el menu.", "Error al registrar el usuario.", [
@@ -84,27 +80,29 @@ export default function Registrar() {
     
     const validarFuerzaPass = ()=>{
         //validamos que tenga algun numero
-        var passwordRegex = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/;
+        let passwordRegex = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/;
         if(password) return passwordRegex.test(password);
         else return false;
     }
 
 
     return (
-        <View style={style.body}>
-            <Text style={style.parrafo}>Nombre/s</Text>
+        <ScrollView contentContainerStyle={style.formBody} keyboardShouldPersistTaps="handled">
+            <Text style={style.label}>Nombre/s</Text>
             <TextInput style={style.input} onChangeText={setNombre}></TextInput>
-            <Text style={style.parrafo}>Apellido/s</Text>
+            <Text style={style.label}>Apellido/s</Text>
             <TextInput style={style.input} onChangeText={setApellido}></TextInput>
-            <Text style={style.parrafo}>Email</Text>
+            <Text style={style.label}>Email</Text>
             <TextInput style={style.input} onChangeText={setEmail} keyboardType="email-address"></TextInput>
-            <Text style={style.parrafo}>Nombre de usuario</Text>
+            <Text style={style.label}>Nombre de usuario</Text>
             <TextInput style={style.input} onChangeText={setUsername}></TextInput>
-            <Text style={style.parrafo}>Contraseña</Text>
+            <Text style={style.label}>Contraseña</Text>
             <TextInput style={style.input} onChangeText={setPassword} secureTextEntry={!verPass}></TextInput>
-            <Text style={style.parrafo}>Confirmar Contraseña</Text>
+            <Text style={style.label}>Confirmar Contraseña</Text>
             <TextInput style={style.input} onChangeText={setPasswordConfirm} secureTextEntry={!verConfirmPass}></TextInput>
-            <Button title="Registar" onPress={registrar}></Button>
-        </View>
+            <View style={style.button}>
+                <Button title="Registrar" onPress={registrar}></Button>
+            </View>
+        </ScrollView>
     )
 }

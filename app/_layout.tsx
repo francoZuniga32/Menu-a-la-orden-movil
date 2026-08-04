@@ -30,8 +30,12 @@ export default function RootLayout() {
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
       <Stack>
-        <Stack.Screen name="index" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
+        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen name="registrar" options={{ title: 'Crear cuenta' }} />
+        <Stack.Screen name="dashboard" options={{ title: 'Mis menús' }} />
+        <Stack.Screen name="crear" options={{ title: 'Crear menú' }} />
+        <Stack.Screen name="edit/[id]" options={{ title: 'Editar menú' }} />
+        <Stack.Screen name="vermenu/[id]" options={{ title: 'Menú' }} />
       </Stack>
       <StatusBar style="auto" />
     </ThemeProvider>

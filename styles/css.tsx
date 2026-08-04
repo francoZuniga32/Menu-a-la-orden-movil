@@ -5,6 +5,10 @@ export default StyleSheet.create({
         margin: 20,
         height: "100%"
     },
+    formBody: {
+        margin: 20,
+        paddingBottom: 32
+    },
     title: {
         color: "white",
         textAlign: "center",
@@ -20,11 +24,37 @@ export default StyleSheet.create({
     parrafo: {
         color: "white"
     },
+    label: {
+        color: "white",
+        fontSize: 14,
+        marginTop: 16,
+        marginBottom: 6
+    },
     input: {
         borderColor: "white",
         borderWidth: 1,
-        borderRadius: 2,
-        color: "white"
+        borderRadius: 6,
+        color: "white",
+        paddingHorizontal: 12,
+        paddingVertical: 10,
+        minHeight: 44
+    },
+    pickerWrap: {
+        borderColor: "white",
+        borderWidth: 1,
+        borderRadius: 6,
+        paddingHorizontal: 4,
+        justifyContent: "center"
+    },
+    sectionTitle: {
+        color: "white",
+        fontSize: 18,
+        fontWeight: "600",
+        marginTop: 32,
+        marginBottom: 4,
+        paddingTop: 16,
+        borderTopWidth: 1,
+        borderTopColor: "rgba(255,255,255,0.25)"
     },
     headerImage: {
         color: '#808080',
@@ -37,7 +67,8 @@ export default StyleSheet.create({
         gap: 8,
     },
     button: {
-        marginTop: 20,
+        marginTop: 24,
+        marginBottom: 8,
         width: "auto"
     },
     button_image:{
