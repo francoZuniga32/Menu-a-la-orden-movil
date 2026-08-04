@@ -15,7 +15,7 @@ export default function HomeScreen() {
 
   useEffect(()=>{
     api.getMenus().then(x => x.json()).then(data => setMenus(data));
-  })
+  },[])
 
 
   return (
