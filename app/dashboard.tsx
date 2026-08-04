@@ -1,4 +1,4 @@
-import api from '@/api/api';
+import Api from '@/api/api';
 import keys from '@/api/claves';
 import Menu from '@/components/menu_edit';
 import IUsuario from '@/models/IUsuario';
@@ -8,6 +8,8 @@ import { Button, View } from "react-native";
 
 import claves from '@/api/claves';
 import styles from "@/styles/css";
+
+const api = new Api();
 
 export default function Dashboard() {
 

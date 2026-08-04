@@ -14,7 +14,7 @@ export default function HomeScreen() {
   const [menus, setMenus] = useState<IMenu[]>([]);
 
   useEffect(()=>{
-    api.getMenus().then(x => x.json()).then(data => setMenus(data));
+    (new api()).getMenus().then(x => x.json()).then(data => setMenus(data));
   },[])
 
 

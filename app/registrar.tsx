@@ -1,9 +1,11 @@
-import api from "@/api/api";
+import Api from "@/api/api";
 import IUsuario from "@/models/IUsuario";
 import style from "@/styles/css";
 import { router } from "expo-router";
 import { useState } from "react";
 import { Alert, Button, ScrollView, Text, TextInput, View } from "react-native";
+    
+const api = new Api();
 
 export default function Registrar() {
     const [nombre, setNombre] = useState<string>();

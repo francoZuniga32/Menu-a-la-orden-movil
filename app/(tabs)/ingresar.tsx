@@ -1,10 +1,11 @@
 import { Alert, Button, Text } from 'react-native';
 
-import api from '@/api/api';
+import Api from '@/api/api';
 import ParallaxScrollView from '@/components/parallax-scroll-view';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { useState } from 'react';
 import { TextInput } from 'react-native';
+const api = new Api();
 
 import keys from '@/api/claves';
 import { router } from 'expo-router';
@@ -34,6 +35,7 @@ export default function ingresar() {
         router.push('/dashboard');
       })
       .catch(err => { 
+        console.error(err);
         Alert.alert('Error', 'El usuario o contraseña no son correctos.', [
           {text: 'OK', onPress: () => console.log('OK Pressed')},
         ]);

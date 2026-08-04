@@ -1,4 +1,4 @@
-import api from "@/api/api";
+import Api from "@/api/api";
 import keys from "@/api/claves";
 import IItem from "@/models/IItem";
 import IMenu from "@/models/IMenu";
@@ -12,6 +12,8 @@ import styles from "@/styles/css";
 
 import media from '@/api/media';
 import { ImagePickerAsset } from "expo-image-picker";
+
+const api = new Api();
 
 export default function CrearMenu() {
 

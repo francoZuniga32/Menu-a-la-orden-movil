@@ -1,4 +1,4 @@
-import api from '@/api/api';
+import Api from '@/api/api';
 import ItemMenu from '@/components/item_menu';
 import IMenu from '@/models/IMenu';
 import { useLocalSearchParams } from 'expo-router';
@@ -9,6 +9,8 @@ import ITemplate from '@/models/ITemplate';
 import template1 from '@/styles/template1';
 import template2 from '@/styles/template2';
 import template3 from '@/styles/template3';
+
+const api = new Api();
 
 export default function vermenu() {
   let { id } = useLocalSearchParams<{ id: string }>()

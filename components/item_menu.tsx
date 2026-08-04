@@ -1,9 +1,9 @@
-import api from "@/api/api";
+import Api from "@/api/api";
 import { Image } from "expo-image";
 import { PropsWithChildren } from "react";
 import { StyleProp, StyleSheet, Text, TextStyle, TouchableOpacity, useWindowDimensions, View, ViewStyle } from "react-native";
 import RenderHtml from 'react-native-render-html';
-
+const api = new Api();
 type style = {
     body: ViewStyle,
     parrafo: ViewStyle,

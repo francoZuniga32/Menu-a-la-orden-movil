@@ -3,11 +3,13 @@ import IMenu from "@/models/IMenu";
 import IUsuario from "@/models/IUsuario";
 import axios from "axios";
 
-const baseUrl : string = "http://francozuniga32.duckdns.org:3001";
+export default class Api {
+    baseUrl: string;
 
-export default {
-    baseUrl: "http://francozuniga32.duckdns.org:3001",
-    
+    constructor() {
+        this.baseUrl = process.env.EXPO_PUBLIC_API_URL || "http://localhost:3001";
+    }
+
     login(usuario:string, contrasenia:string){
         var myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/json");
@@ -16,13 +18,15 @@ export default {
             "username": usuario,
             "password": contrasenia
         });
+
         var requestOptions = {
             method: 'POST',
             headers: myHeaders,
             body: raw,
         };
-        return fetch(baseUrl + "/usuario/login", requestOptions);
-    },
+        console.log(this.baseUrl + "/usuario/login");
+        return fetch(this.baseUrl + "/usuario/login", requestOptions);
+    }
 
     registrarUsuario(usaurio : IUsuario){
         var myHeaders = new Headers();
@@ -34,8 +38,8 @@ export default {
             headers: myHeaders,
             body: raw,
         };
-        return fetch(baseUrl + "/usuario/", requestOptions);
-    },
+        return fetch(this.baseUrl + "/usuario/", requestOptions);
+    }
     
     getMenus(){
         var myHeaders = new Headers();
@@ -45,8 +49,9 @@ export default {
             method: 'GET',
             headers: myHeaders,
         };
-        return fetch(baseUrl + "/menus", requestOptions);
-    },
+        console.log(this.baseUrl + "/menus");
+        return fetch(this.baseUrl + "/menus", requestOptions);
+    }
 
     getMenu(id:number|null){
         var myHeaders = new Headers();
@@ -56,8 +61,8 @@ export default {
             method: 'GET',
             headers: myHeaders,
         };
-        return fetch(baseUrl + "/menus/"+id, requestOptions);
-    },
+        return fetch(this.baseUrl + "/menus/"+id, requestOptions);
+    }
 
     ingresar(usuario:string, contrasenia: string){
         var myHeaders = new Headers();
@@ -71,18 +76,18 @@ export default {
                 password: contrasenia
             })
         };
-        return fetch(baseUrl + "/usuario/login", requestOptions);
-    },
+        return fetch(this.baseUrl + "/usuario/login", requestOptions);
+    }
 
     menusUsuario(idUsuario:number){
         let headers = {"Content-Type": "application/json"};
 
         return axios({
             method: 'get',
-            url: baseUrl + "/menus/usuario/"+idUsuario,
+            url: this.baseUrl + "/menus/usuario/"+idUsuario,
             headers: headers
         });
-    },
+    }
 
     crearMenu(menu: IMenu, token: string | null | undefined ){
         var myHeaders = new Headers();
@@ -95,9 +100,9 @@ export default {
             body: JSON.stringify(menu)
         };
 
-        return fetch(baseUrl + "/menus/", requestOptions);
+        return fetch(this.baseUrl + "/menus/", requestOptions);
 
-    },
+    }
     editarMenu(menu: IMenu, token: string | null | undefined){
         var myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/json");
@@ -109,8 +114,8 @@ export default {
             body: JSON.stringify(menu)
         };
         console.log(menu);
-        return fetch(baseUrl + "/menus/"+menu.id, requestOptions);
-    },
+        return fetch(this.baseUrl + "/menus/"+menu.id, requestOptions);
+    }
     crearItem(item: IItem[], token: string | null | undefined){
         var myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/json");
@@ -122,8 +127,8 @@ export default {
             body: JSON.stringify({items: item})
         };
 
-        return fetch(baseUrl + "/menus/items/", requestOptions);
-    },
+        return fetch(this.baseUrl + "/menus/items/", requestOptions);
+    }
     eliminarMenu(id: number, token: string | null | undefined){
         var myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/json");
@@ -134,8 +139,8 @@ export default {
             headers: myHeaders
         };
 
-        return fetch(baseUrl + "/menus/"+id, requestOptions);
-    },
+        return fetch(this.baseUrl + "/menus/"+id, requestOptions);
+    }
     eliminarItem( items:IItem[], token : string | null | undefined ){
         var myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/json");
@@ -149,9 +154,10 @@ export default {
             })
         };
 
-        return fetch(baseUrl + "/menus/items", requestOptions);
-    },
-    uploadFile: async (file : any)=>{
+        return fetch(this.baseUrl + "/menus/items", requestOptions);
+    }
+    
+    async uploadFile(file : any){
         const formData = new FormData();
 
         formData.append("miniatura", {
@@ -160,7 +166,7 @@ export default {
             type: file.mimeType ?? "image/jpeg",
         } as any);
 
-        const response = await fetch(baseUrl+"/upload", {
+        const response = await fetch(this.baseUrl+"/upload", {
             method: "POST",
             headers: {
                 "Content-Type": "multipart/form-data",

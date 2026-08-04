@@ -1,4 +1,4 @@
-import api from "@/api/api";
+import Api from "@/api/api";
 import keys from "@/api/claves";
 import IItem from "@/models/IItem";
 import IMenu from "@/models/IMenu";
@@ -13,6 +13,8 @@ import media from "@/api/media";
 import styles from "@/styles/css";
 import { Image } from "expo-image";
 import { ImagePickerAsset } from "expo-image-picker";
+
+const api = new Api();
 
 export default function CrearMenu() {
     let { id } = useLocalSearchParams<{ id: string }>();
