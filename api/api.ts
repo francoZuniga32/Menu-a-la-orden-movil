@@ -1,7 +1,6 @@
 import IItem from "@/models/IItem";
 import IMenu from "@/models/IMenu";
 import IUsuario from "@/models/IUsuario";
-import axios from "axios";
 
 export default class Api {
     baseUrl: string;
@@ -80,13 +79,15 @@ export default class Api {
     }
 
     menusUsuario(idUsuario:number){
-        let headers = {"Content-Type": "application/json"};
+        var myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
 
-        return axios({
-            method: 'get',
-            url: this.baseUrl + "/menus/usuario/"+idUsuario,
-            headers: headers
-        });
+        var requestOptions = {
+            method: 'GET',
+            headers: myHeaders,
+        };
+
+        return fetch(this.baseUrl + "/menus/usuario/"+idUsuario, requestOptions);
     }
 
     crearMenu(menu: IMenu, token: string | null | undefined ){
@@ -113,7 +114,6 @@ export default class Api {
             headers: myHeaders,
             body: JSON.stringify(menu)
         };
-        console.log(menu);
         return fetch(this.baseUrl + "/menus/"+menu.id, requestOptions);
     }
     crearItem(item: IItem[], token: string | null | undefined){

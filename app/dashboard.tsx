@@ -38,7 +38,7 @@ export default function Dashboard() {
             setUser(user);
             api.menusUsuario(user.id)
                 .then(result => {
-                    return result.data;
+                    return result.json();
                 })
                 .then(data => {
                     setMenu(data);
