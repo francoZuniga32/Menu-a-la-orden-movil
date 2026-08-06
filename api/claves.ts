@@ -15,9 +15,9 @@ export default {
         }
     },
 
-    async addUser(usaurio:string){
+    async addUser(usuario:string){
         try{
-            await AsyncStorage.setItem('user', usaurio);
+            await AsyncStorage.setItem('user', usuario);
         }catch(err){
             console.error("Fallo");
         }

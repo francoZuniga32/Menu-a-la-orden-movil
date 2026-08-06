@@ -9,29 +9,11 @@ export default class Api {
         this.baseUrl = process.env.EXPO_PUBLIC_API_URL || "http://localhost:3001";
     }
 
-    login(usuario:string, contrasenia:string){
+    registrarUsuario(usuario : IUsuario){
         var myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/json");
 
-        var raw = JSON.stringify({
-            "username": usuario,
-            "password": contrasenia
-        });
-
-        var requestOptions = {
-            method: 'POST',
-            headers: myHeaders,
-            body: raw,
-        };
-        console.log(this.baseUrl + "/usuario/login");
-        return fetch(this.baseUrl + "/usuario/login", requestOptions);
-    }
-
-    registrarUsuario(usaurio : IUsuario){
-        var myHeaders = new Headers();
-        myHeaders.append("Content-Type", "application/json");
-
-        var raw = JSON.stringify(usaurio);
+        var raw = JSON.stringify(usuario);
         var requestOptions = {
             method: 'POST',
             headers: myHeaders,
